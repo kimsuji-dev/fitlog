@@ -10,10 +10,11 @@ function entryLine(e) {
   return `- ${e.name} ${e.sets.length}세트 ×${reps} ${kgStr}`
 }
 
-export function buildEvent({ session, stars, kcal, diet, inPeriod }) {
+export function buildEvent({ session, stars, kcal, diet, inPeriod, inositol }) {
   const starStr = '★'.repeat(stars) + '☆'.repeat(5 - stars)
   let summary = `💪 운동 ${starStr} (~${kcal}kcal)`
   if (diet) summary += ` ${DIET_EMOJI[diet]}`
+  if (inositol) summary += ' 💊'
   if (inPeriod) summary += ' 🩸'
 
   const lines = session.entries.map(entryLine)

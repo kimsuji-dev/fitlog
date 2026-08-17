@@ -1,13 +1,18 @@
 import { openDB } from 'idb'
 
-const dbp = openDB('fitlog', 1, {
-  upgrade(d) {
-    d.createObjectStore('profile')
-    d.createObjectStore('weights', { keyPath: 'date' })
-    d.createObjectStore('sessions', { keyPath: 'date' })
-    d.createObjectStore('diet')
-    d.createObjectStore('periods', { keyPath: 'start' })
-    d.createObjectStore('customExercises', { keyPath: 'name' })
+const dbp = openDB('fitlog', 2, {
+  upgrade(d, oldVersion) {
+    if (oldVersion < 1) {
+      d.createObjectStore('profile')
+      d.createObjectStore('weights', { keyPath: 'date' })
+      d.createObjectStore('sessions', { keyPath: 'date' })
+      d.createObjectStore('diet')
+      d.createObjectStore('periods', { keyPath: 'start' })
+      d.createObjectStore('customExercises', { keyPath: 'name' })
+    }
+    if (oldVersion < 2) {
+      d.createObjectStore('inositol')
+    }
   },
 })
 
@@ -37,6 +42,9 @@ export const isInPeriod = async date =>
 export const addCustomExercise = async e => (await dbp).put('customExercises', e)
 export const listCustomExercises = async () => (await dbp).getAll('customExercises')
 
+export const setInositol = async (date, taken) => (await dbp).put('inositol', taken, date)
+export const getInositol = async date => Boolean(await (await dbp).get('inositol', date))
+
 export const exportAll = async () => {
   const d = await dbp
   return {
@@ -46,5 +54,6 @@ export const exportAll = async () => {
     diet: await Promise.all((await d.getAllKeys('diet')).map(async k => ({ date: k, rating: await d.get('diet', k) }))),
     periods: await d.getAll('periods'),
     customExercises: await d.getAll('customExercises'),
+    inositol: await Promise.all((await d.getAllKeys('inositol')).map(async k => ({ date: k, taken: await d.get('inositol', k) }))),
   }
 }

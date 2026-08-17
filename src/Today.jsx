@@ -3,6 +3,7 @@ import { BUILTIN } from './exercises'
 import {
   getProfile, addWeight, listWeights, saveSession, getSession, listSessions,
   setDiet, getDiet, startPeriod, endPeriod, isInPeriod, addCustomExercise, listCustomExercises,
+  setInositol, getInositol,
 } from './db'
 import { calories, volume, stars as calcStars, recentAvgVolume } from './calc'
 import { buildEvent } from './calendarEvent'
@@ -36,6 +37,7 @@ export default function Today() {
 
   const [diet, setDietState] = useState(null)
   const [inPeriod, setInPeriod] = useState(false)
+  const [inositol, setInositolState] = useState(false)
 
   const [weightAvailable, setWeightAvailable] = useState(true)
   const [saveState, setSaveState] = useState('idle') // idle | saving | saved | calendar_fail
@@ -61,6 +63,7 @@ export default function Today() {
       const d = await getDiet(today)
       if (d) setDietState(d)
       setInPeriod(await isInPeriod(today))
+      setInositolState(await getInositol(today))
 
       const weights = await listWeights()
       setWeightAvailable(weights.length > 0)
@@ -104,6 +107,12 @@ export default function Today() {
     setDietState(rating)
   }
 
+  async function handleInositolToggle() {
+    const next = !inositol
+    await setInositol(today, next)
+    setInositolState(next)
+  }
+
   async function handlePeriodToggle() {
     if (inPeriod) await endPeriod(today)
     else await startPeriod(today)
@@ -118,7 +127,7 @@ export default function Today() {
     const sessions = await listSessions()
     const avgVolume = recentAvgVolume(sessions, today)
     const st = calcStars({ volume: volume(session), avgVolume, kcal, inPeriod })
-    const event = buildEvent({ session, stars: st, kcal, diet, inPeriod })
+    const event = buildEvent({ session, stars: st, kcal, diet, inPeriod, inositol: await getInositol(today) })
     try {
       const newEventId = await upsertEvent(event, session.eventId || null)
       await saveSession({ ...session, eventId: newEventId })
@@ -247,6 +256,13 @@ export default function Today() {
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="card">
+        <div>💊 이노시톨</div>
+        <button className="big-btn" onClick={handleInositolToggle}>
+          {inositol ? '오늘 먹었어요 ✅' : '아직이에요'}
+        </button>
       </div>
 
       <div className="card">

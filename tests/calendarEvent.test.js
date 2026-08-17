@@ -41,4 +41,19 @@ describe('buildEvent', () => {
     expect(e.start).toEqual({ dateTime: '2026-08-17T18:00:00', timeZone: 'Asia/Seoul' })
     expect(e.end).toEqual({ dateTime: '2026-08-17T19:10:00', timeZone: 'Asia/Seoul' })
   })
+
+  it('이노시톨 먹었으면 제목에 💊', () => {
+    const e = buildEvent({ ...base, inositol: true })
+    expect(e.summary).toContain('💊')
+  })
+
+  it('이노시톨 안 먹었으면 이모지 생략', () => {
+    const e = buildEvent({ ...base, inositol: false })
+    expect(e.summary).not.toContain('💊')
+  })
+
+  it('이모지 순서: 식단 → 이노시톨 → 생리', () => {
+    const e = buildEvent({ ...base, diet: 'good', inositol: true, inPeriod: true })
+    expect(e.summary).toBe('💪 운동 ★★★☆☆ (~420kcal) 🥗 💊 🩸')
+  })
 })
