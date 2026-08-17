@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Today from './Today'
 import History from './History'
+import Settings from './Settings'
 
 const TABS = [
   { id: 'today', label: '💪 오늘' },
@@ -15,7 +16,7 @@ export default function App() {
     <div style={{ maxWidth: 480, margin: '0 auto', padding: 12, fontFamily: 'sans-serif', paddingBottom: 80 }}>
       {tab === 'today' && <Today />}
       {tab === 'history' && <History />}
-      {tab === 'settings' && <div style={{ padding: '20px', background: 'var(--accent-color)', borderRadius: 'var(--border-radius)', marginBottom: '20px' }}>설정 (Task 8)</div>}
+      {tab === 'settings' && <Settings />}
 
       <nav style={{
         position: 'fixed',
