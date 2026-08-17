@@ -14,9 +14,9 @@ export default function App() {
 
   return (
     <div style={{ maxWidth: 480, margin: '0 auto', padding: 12, fontFamily: 'sans-serif', paddingBottom: 80 }}>
-      {tab === 'today' && <Today />}
-      {tab === 'history' && <History />}
-      {tab === 'settings' && <Settings />}
+      <div style={{ display: tab === 'today' ? undefined : 'none' }}><Today /></div>
+      <div style={{ display: tab === 'history' ? undefined : 'none' }}><History active={tab === 'history'} /></div>
+      <div style={{ display: tab === 'settings' ? undefined : 'none' }}><Settings active={tab === 'settings'} /></div>
 
       <nav style={{
         position: 'fixed',

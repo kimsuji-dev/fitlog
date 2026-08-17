@@ -20,7 +20,7 @@ function lastSetSummary(entries) {
   return seen
 }
 
-export default function History() {
+export default function History({ active } = {}) {
   const [weights, setWeights] = useState([])
   const [periods, setPeriods] = useState([])
   const [sessions, setSessions] = useState([])
@@ -28,6 +28,7 @@ export default function History() {
   const [openDate, setOpenDate] = useState(null)
 
   useEffect(() => {
+    if (!active) return
     (async () => {
       const [w, p, s] = await Promise.all([listWeights(), listPeriods(), listSessions()])
       setWeights(w)
@@ -36,7 +37,7 @@ export default function History() {
       const entries = await Promise.all(s.map(async sess => [sess.date, await getDiet(sess.date)]))
       setDiets(Object.fromEntries(entries))
     })()
-  }, [])
+  }, [active])
 
   const inPeriod = date => periods.some(p => p.start <= date && (p.end === null || date <= p.end))
 

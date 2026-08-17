@@ -4,7 +4,7 @@ import { connectGoogle, isConnected } from './google'
 
 const todayStr = () => new Date().toISOString().slice(0, 10)
 
-export default function Settings() {
+export default function Settings({ active } = {}) {
   const [heightCm, setHeightCm] = useState('')
   const [weightKg, setWeightKg] = useState('')
   const [lastWeight, setLastWeight] = useState(null) // {date, kg}
@@ -12,13 +12,14 @@ export default function Settings() {
   const [msg, setMsg] = useState('')
 
   useEffect(() => {
+    if (!active) return
     (async () => {
       const profile = await getProfile()
       if (profile?.heightCm) setHeightCm(String(profile.heightCm))
       const weights = await listWeights()
       if (weights.length) setLastWeight(weights[weights.length - 1])
     })()
-  }, [])
+  }, [active])
 
   async function saveHeight() {
     if (!heightCm) return
