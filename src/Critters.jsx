@@ -1,97 +1,123 @@
-// 오리지널 픽셀 캐릭터 3마리 — 잔디밭 장식용 (클릭 불가, 순수 장식)
-// 16x16 픽셀 그리드, 글자 하나 = 픽셀 한 칸. '.' = 투명.
+// 오리지널 픽셀 캐릭터 — 잔디밭의 부부 + 하늘의 아기천사 (클릭 불가, 순수 장식)
+// 24x24 픽셀 그리드, 글자 하나 = 픽셀 한 칸. '.' = 투명.
 
-const GRID = 16
+const GRID = 24
 
-// 통통한 노란 햄스터 (분홍 볼)
-const HAMSTER = {
+// 긴 검은 머리, 따뜻한 핑크 상의를 입은 아내
+const WIFE = {
   palette: {
     O: 'var(--text-color)',
-    Y: '#ffd35c',
-    D: '#f2b93a',
-    P: '#f7a8c4',
-    W: '#fdf6e3',
-    K: '#3a2415',
+    H: '#2e2018',
+    S: '#e8b083',
+    E: '#3a2415',
     N: '#e0708f',
-  },
-  rows: [
-    '....OO....OO....',
-    '...OYYO..OYYO...',
-    '..OYYYYOOYYYYO..',
-    '.OYYYYYYYYYYYYO.',
-    'OYYYYYYYYYYYYYO.',
-    'OYYPYYYYYYPYYYO.',
-    'OYPPKYOOOOKYPPO.',
-    'OYYYYYOOOOYYYYO.',
-    'OYYYYYYNNYYYYYO.',
-    'OYYYYYYNNYYYYYO.',
-    '.OYYYYYYYYYYYO..',
-    '.ODYWWWWWWYDO...',
-    '..ODWWWWWWDO....',
-    '...ODDYYDDO.....',
-    '....OO..OO......',
-    '................',
-  ],
-}
-
-// 동글동글한 파란 거북이 (무늬 없는 심플 등딱지)
-const TURTLE = {
-  palette: {
-    O: 'var(--text-color)',
-    S: '#3f7fc4',
-    H: '#69a6e0',
-    B: '#8fd6c9',
-    C: '#6cbfae',
+    T: '#e8749a',
+    P: '#c65b7c',
     K: '#3a2415',
   },
   rows: [
-    '................',
-    '....OOOOOOOO....',
-    '...OSSSSSSSSO...',
-    '..OSHSSSSSSHSO..',
-    '.OSHHSSSSSSHHSO.',
-    'OBCSSSSSSSSSSCBO',
-    'OBCSSSSSSSSSSCBO',
-    'OBBCCCCCCCCCCBBO',
-    'OBKBCCCCCCCCKBBO',
-    '.OBBCCCCCCCCBBO.',
-    '..OBB......BBO..',
-    '..OBB......BBO..',
-    '...OO......OO...',
-    '................',
-    '................',
-    '................',
+    '........................',
+    '.........HHHHHH.........',
+    '.......HHHHHHHHHH.......',
+    '......HHHHHHHHHHHH......',
+    '.......HHSSSSSSHH.......',
+    '......HHSSESSESSHH......',
+    '......HHSSSSSSSSHH......',
+    '......HHSNSSSSNSHH......',
+    '.......HSSSSSSSSH.......',
+    '.........HHHHHH.........',
+    '.........HSSSSH.........',
+    '.......HHHTTTTHHH.......',
+    '.....HHTTTTTTTTTTHH.....',
+    '....HTTTTTTTTTTTTTTH....',
+    '....HTTTTTTTTTTTTTTH....',
+    '.....TTTTTTTTTTTTTT.....',
+    '.......TTTTTTTTTT.......',
+    '.......PPPPPPPPPP.......',
+    '.....PPPPPPPPPPPPPP.....',
+    '.....PPPPPPPPPPPPPP.....',
+    '......PPP.PPPP.PPP......',
+    '......PPP.PPPP.PPP......',
+    '......KKK.KKKK.KKK......',
+    '........................',
   ],
 }
 
-// 갈색과 크림색이 섞인 충직한 강아지
-const PUPPY = {
+// 짧은 검은 머리, 파랑/초록 상의를 입은 남편
+const HUSBAND = {
   palette: {
     O: 'var(--text-color)',
-    B: '#a9702f',
-    D: '#8a5722',
-    C: '#f3e0c0',
+    B: '#231a14',
+    S: '#e8b083',
+    E: '#3a2415',
+    U: '#3f7fa0',
+    p: '#4a6b3d',
     K: '#3a2415',
-    N: '#5b3a1e',
-    T: '#e58a9a',
   },
   rows: [
-    '.OBBO.....OBBO..',
-    'OBBBBO...OBBBBO.',
-    'OBDDBO...OBDDBO.',
-    '.OBBBOOOOOBBBO..',
-    '..OBBBBBBBBBO...',
-    '.OBBCCCCCCCBBO..',
-    'OBBCKCCCCCKCBBO.',
-    'OBBCCCCNNCCCBBO.',
-    'OBBCCCCNNCCCBBO.',
-    '.OBCCCTTCCCBO...',
-    '.OBBCCCCCCBBO...',
-    '..OBBCCCCBBO....',
-    '..OB.CCCC.BO....',
-    '..OB......BO....',
-    '..OO......OO....',
-    '................',
+    '........................',
+    '.........BBBBBB.........',
+    '........BBBBBBBB........',
+    '........BBBBBBBB........',
+    '........BSSSSSSB........',
+    '........BSESSESB........',
+    '........BSSSSSSB........',
+    '........BSSSSSSB........',
+    '.........SSSSSS.........',
+    '...........SS...........',
+    '..........UUUU..........',
+    '......UUUUUUUUUUUU......',
+    '......UUUUUUUUUUUU......',
+    '......UUUUUUUUUUUU......',
+    '..........UUUU..........',
+    '..........pppp..........',
+    '.......pppppppppp.......',
+    '.......pppppppppp.......',
+    '......pp..pppp..pp......',
+    '......pp..pppp..pp......',
+    '......pp..pppp..pp......',
+    '......KK..KKKK..KK......',
+    '........................',
+    '........................',
+  ],
+}
+
+// 후광과 작은 날개를 단 통통한 아기천사 — 하늘에서 떠다닌다
+const ANGEL = {
+  palette: {
+    O: '#f2c14e',
+    H: '#caa15a',
+    S: '#f6c9a0',
+    E: '#3a2415',
+    N: '#f2a0b0',
+    W: '#fdf6e3',
+    C: '#f3e6bd',
+  },
+  rows: [
+    '.........OOOOOO.........',
+    '..........O..O..........',
+    '.........OOOOOO.........',
+    '........................',
+    '..........HHHH..........',
+    '........HSSSSSSH........',
+    '........SSESSESS........',
+    '........SNSSSSNS........',
+    '......WWSSSSSSSSWW......',
+    '......WWWCCCCCCWWW......',
+    '.....WWWCCCCCCCCWWW.....',
+    '....WWWWCCCSSCCCWWWW....',
+    '.....WWWCCCCCCCCWWW.....',
+    '.......WWCCCCCCWW.......',
+    '..........CCCC..........',
+    '.......SS.SSSS.SS.......',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
   ],
 }
 
@@ -104,12 +130,12 @@ function assertGrid(name, def) {
 }
 
 if (import.meta.env.DEV) {
-  assertGrid('HAMSTER', HAMSTER)
-  assertGrid('TURTLE', TURTLE)
-  assertGrid('PUPPY', PUPPY)
+  assertGrid('WIFE', WIFE)
+  assertGrid('HUSBAND', HUSBAND)
+  assertGrid('ANGEL', ANGEL)
 }
 
-function PixelCritter({ def, size = 56, delay = 0 }) {
+function PixelSprite({ def, size = 64, delay = 0, className = 'critter-sprite' }) {
   const { palette, rows } = def
   const cells = []
   rows.forEach((row, y) => {
@@ -123,7 +149,7 @@ function PixelCritter({ def, size = 56, delay = 0 }) {
   })
   return (
     <svg
-      className="critter-sprite"
+      className={className}
       style={{ animationDelay: `${delay}ms` }}
       width={size}
       height={size}
@@ -135,12 +161,21 @@ function PixelCritter({ def, size = 56, delay = 0 }) {
   )
 }
 
+// 잔디밭에 나란히 선 부부
 export default function Critters() {
   return (
     <div className="critter-strip" aria-hidden="true">
-      <PixelCritter def={HAMSTER} delay={0} />
-      <PixelCritter def={TURTLE} delay={200} />
-      <PixelCritter def={PUPPY} delay={400} />
+      <PixelSprite def={WIFE} delay={0} />
+      <PixelSprite def={HUSBAND} delay={200} />
+    </div>
+  )
+}
+
+// 하늘을 떠다니는 아기천사 (본문을 가리지 않도록 상단 고정)
+export function SkyAngel() {
+  return (
+    <div className="sky-angel" aria-hidden="true">
+      <PixelSprite def={ANGEL} size={40} className="angel-sprite" />
     </div>
   )
 }

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Today from './Today'
 import History from './History'
 import Settings from './Settings'
-import Critters from './Critters'
+import Critters, { SkyAngel } from './Critters'
 import NagLine from './NagLine'
 
 const TABS = [
@@ -16,6 +16,7 @@ export default function App() {
 
   return (
     <div className="app-shell">
+      <SkyAngel />
       <NagLine trigger={tab} />
 
       <div style={{ display: tab === 'today' ? undefined : 'none' }}><Today /></div>

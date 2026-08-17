@@ -243,6 +243,30 @@ input:focus, textarea:focus, select:focus {
   }
 }
 
+.sky-angel {
+  position: fixed;
+  top: 6px;
+  right: 10px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.angel-sprite {
+  image-rendering: pixelated;
+  animation: angel-drift 6s ease-in-out infinite;
+}
+
+@keyframes angel-drift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-14px, -6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .angel-sprite {
+    animation: none;
+  }
+}
+
 .tab-nav {
   position: fixed;
   bottom: 0;
