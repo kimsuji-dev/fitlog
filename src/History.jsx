@@ -63,7 +63,7 @@ export default function History({ active } = {}) {
         <div className="card">
           <div>🏋️ 종목별 최근 기록</div>
           {recentByExercise.map(r => (
-            <div key={r.name} style={{ fontSize: '0.9rem' }}>
+            <div key={r.name} className="text-sm">
               {r.name} — {fmtDate(r.date)}: {r.text}
             </div>
           ))}
@@ -77,9 +77,8 @@ export default function History({ active } = {}) {
         return (
           <div key={s.date} className="card">
             <button
-              className="icon-btn"
+              className="icon-btn toggle-btn"
               onClick={() => setOpenDate(open ? null : s.date)}
-              style={{ display: 'flex', justifyContent: 'space-between', width: '100%', textAlign: 'left' }}
             >
               <span>
                 {fmtDate(s.date)} {s.start}–{s.end} · 종목 {s.entries.length}개 · 볼륨 {volume(s)}kg
@@ -89,7 +88,7 @@ export default function History({ active } = {}) {
               <span>{open ? '▲' : '▼'}</span>
             </button>
             {open && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div className="entry-list">
                 {s.entries.map((e, i) => (
                   <div key={i} className="entry-row">
                     <strong>{e.name}</strong>
@@ -98,7 +97,7 @@ export default function History({ active } = {}) {
                       : <div>{e.minutes}분{e.km ? ` / ${e.km}km` : ''}</div>}
                   </div>
                 ))}
-                {s.memo && <div style={{ fontSize: '0.85rem' }}>📝 {s.memo}</div>}
+                {s.memo && <div className="text-sm">📝 {s.memo}</div>}
               </div>
             )}
           </div>

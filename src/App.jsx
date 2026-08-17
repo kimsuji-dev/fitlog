@@ -13,37 +13,17 @@ export default function App() {
   const [tab, setTab] = useState('today')
 
   return (
-    <div style={{ maxWidth: 480, margin: '0 auto', padding: 12, fontFamily: 'sans-serif', paddingBottom: 80 }}>
+    <div className="app-shell">
       <div style={{ display: tab === 'today' ? undefined : 'none' }}><Today /></div>
       <div style={{ display: tab === 'history' ? undefined : 'none' }}><History active={tab === 'history'} /></div>
       <div style={{ display: tab === 'settings' ? undefined : 'none' }}><Settings active={tab === 'settings'} /></div>
 
-      <nav style={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        display: 'flex',
-        borderTop: '2px solid var(--border-color)',
-        background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(10px)',
-        zIndex: 100,
-      }}>
+      <nav className="tab-nav">
         {TABS.map(t => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            style={{
-              flex: 1,
-              padding: '14px 8px',
-              border: 'none',
-              background: 'transparent',
-              fontWeight: tab === t.id ? 'bold' : 'normal',
-              color: tab === t.id ? 'var(--primary-color)' : 'var(--text-color)',
-              fontSize: '0.95rem',
-              transition: 'all 0.3s ease',
-              borderBottom: tab === t.id ? '3px solid var(--primary-color)' : '3px solid transparent',
-            }}>
+            className={tab === t.id ? 'active' : ''}>
             {t.label}
           </button>
         ))}
