@@ -217,6 +217,32 @@ input:focus, textarea:focus, select:focus {
   padding-bottom: 80px;
 }
 
+.critter-strip {
+  height: 70px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-evenly;
+  padding: 0 12px;
+  margin-top: 8px;
+  pointer-events: none;
+}
+
+.critter-sprite {
+  image-rendering: pixelated;
+  animation: critter-bob 1.2s steps(2) infinite;
+}
+
+@keyframes critter-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .critter-sprite {
+    animation: none;
+  }
+}
+
 .tab-nav {
   position: fixed;
   bottom: 0;
