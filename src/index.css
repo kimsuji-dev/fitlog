@@ -59,3 +59,96 @@ input:focus, textarea:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(255, 217, 232, 0.3);
 }
+
+.card {
+  background: #fff;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.big-btn {
+  display: block;
+  width: 100%;
+  background: var(--primary-color);
+  font-size: 1.15rem;
+  font-weight: bold;
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.icon-btn {
+  background: transparent;
+  box-shadow: none;
+  padding: 4px 8px;
+}
+
+.entry-row {
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.set-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.set-row input {
+  width: 64px;
+}
+
+.exercise-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.diet-row {
+  display: flex;
+  gap: 10px;
+}
+
+.diet-row button {
+  font-size: 1.5rem;
+  background: var(--tertiary-color);
+}
+
+.diet-row button.selected {
+  background: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(255, 217, 232, 0.5);
+}
+
+.notice {
+  background: var(--tertiary-color);
+  border-radius: var(--border-radius);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+.notice.success {
+  background: #d9f7e0;
+}
+
+.notice.error {
+  background: #ffd9d9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
