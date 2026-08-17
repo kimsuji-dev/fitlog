@@ -1,4 +1,4 @@
-const CLIENT_ID = 'REPLACE_ME.apps.googleusercontent.com' // 사용자 발급 후 교체
+const CLIENT_ID = '605479068933-jvj3100oeflrat01r4ka9on2b1qhjnhf.apps.googleusercontent.com'
 const SCOPE = 'https://www.googleapis.com/auth/calendar.events'
 
 let accessToken = sessionStorage.getItem('gcal_token')
