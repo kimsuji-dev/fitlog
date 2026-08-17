@@ -8,7 +8,7 @@ const POINT_COLOR = '#e6437e'
 const PERIOD_FILL = 'rgba(230, 60, 90, 0.16)' // 반투명 붉은 밴드
 const POINT_SIZE = 6
 
-const todayStr = () => new Date().toISOString().slice(0, 10)
+const todayStr = () => new Date().toLocaleDateString('sv-SE')
 
 export default function WeightChart({ weights, periods }) {
   if (!weights || weights.length < 2) {

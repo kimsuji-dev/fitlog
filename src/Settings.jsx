@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { getProfile, setProfile, addWeight, listWeights, exportAll } from './db'
 import { connectGoogle, isConnected } from './google'
 
-const todayStr = () => new Date().toISOString().slice(0, 10)
+const todayStr = () => new Date().toLocaleDateString('sv-SE')
 
 export default function Settings({ active } = {}) {
   const [heightCm, setHeightCm] = useState('')

@@ -8,7 +8,7 @@ import { calories, volume, stars as calcStars, recentAvgVolume } from './calc'
 import { buildEvent } from './calendarEvent'
 import { connectGoogle, upsertEvent } from './google'
 
-const todayStr = () => new Date().toISOString().slice(0, 10)
+const todayStr = () => new Date().toLocaleDateString('sv-SE')
 const nowHM = () => new Date().toTimeString().slice(0, 5)
 const DIET_OPTS = [
   { rating: 'good', emoji: '🥗', label: '잘 먹음' },
@@ -53,6 +53,10 @@ export default function Today() {
         setEntries(s.entries)
         setMemo(s.memo || '')
         setEventId(s.eventId || null)
+        if (s.entries.length > 0 && !s.eventId) {
+          setSaveState('calendar_fail')
+          setSaveMsg('캘린더 미전송 기록이 있어요')
+        }
       }
       const d = await getDiet(today)
       if (d) setDietState(d)
