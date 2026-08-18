@@ -1,6 +1,6 @@
 import { openDB } from 'idb'
 
-const dbp = openDB('fitlog', 3, {
+const dbp = openDB('fitlog', 4, {
   upgrade(d, oldVersion) {
     if (oldVersion < 1) {
       d.createObjectStore('profile')
@@ -15,6 +15,9 @@ const dbp = openDB('fitlog', 3, {
     }
     if (oldVersion < 3) {
       d.createObjectStore('restdays')
+    }
+    if (oldVersion < 4) {
+      d.createObjectStore('favorites')
     }
   },
 })
@@ -54,6 +57,15 @@ export const setRestDay = async (date, resting) => (await dbp).put('restdays', r
 export const getRestDay = async date => Boolean(await (await dbp).get('restdays', date))
 export const listRestDays = async () => (await dbp).getAllKeys('restdays')
 
+export const toggleFavorite = async name => {
+  const d = await dbp
+  const cur = await d.get('favorites', name)
+  if (cur) await d.delete('favorites', name)
+  else await d.put('favorites', true, name)
+}
+export const isFavorite = async name => Boolean(await (await dbp).get('favorites', name))
+export const listFavorites = async () => (await dbp).getAllKeys('favorites')
+
 export const exportAll = async () => {
   const d = await dbp
   return {
@@ -65,5 +77,6 @@ export const exportAll = async () => {
     customExercises: await d.getAll('customExercises'),
     inositol: await Promise.all((await d.getAllKeys('inositol')).map(async k => ({ date: k, taken: await d.get('inositol', k) }))),
     restdays: await Promise.all((await d.getAllKeys('restdays')).map(async k => ({ date: k, resting: await d.get('restdays', k) }))),
+    favorites: await d.getAllKeys('favorites'),
   }
 }

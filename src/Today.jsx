@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { BUILTIN } from './exercises'
+import { BUILTIN, MUSCLES, EQUIPMENT } from './exercises'
+import ExercisePicker from './ExercisePicker'
 import {
   getProfile, addWeight, listWeights, saveSession, getSession, listSessions,
   setDiet, getDiet, startPeriod, endPeriod, isInPeriod, addCustomExercise, listCustomExercises,
@@ -33,7 +34,7 @@ export default function Today() {
 
   const [exerciseList, setExerciseList] = useState(BUILTIN)
   const [pickerOpen, setPickerOpen] = useState(false)
-  const [customForm, setCustomForm] = useState(null) // {name, met, type}
+  const [customForm, setCustomForm] = useState(null) // {name, met, type, muscle, equipment}
 
   const [diet, setDietState] = useState(null)
   const [inPeriod, setInPeriod] = useState(false)
@@ -79,7 +80,13 @@ export default function Today() {
 
   async function saveCustomExercise() {
     if (!customForm?.name || !customForm?.met) return
-    const ex = { name: customForm.name, met: Number(customForm.met), type: customForm.type }
+    const ex = {
+      name: customForm.name,
+      met: Number(customForm.met),
+      type: customForm.type,
+      muscles: customForm.muscle ? [customForm.muscle] : [],
+      equipment: customForm.equipment || '맨몸',
+    }
     await addCustomExercise(ex)
     setExerciseList(prev => [...prev, ex])
     setCustomForm(null)
@@ -217,17 +224,12 @@ export default function Today() {
           )}
 
           {pickerOpen && (
-            <div className="card">
-              <div className="exercise-grid">
-                {exerciseList.map(ex => (
-                  <button key={ex.name} onClick={() => addExercise(ex)}>{ex.name}</button>
-                ))}
-              </div>
-              <button onClick={() => { setPickerOpen(false); setCustomForm({ name: '', met: '', type: 'weight' }) }}>
-                ✍️ 직접 추가
-              </button>
-              <button onClick={() => setPickerOpen(false)}>닫기</button>
-            </div>
+            <ExercisePicker
+              exercises={exerciseList}
+              onSelect={addExercise}
+              onAddCustom={() => { setPickerOpen(false); setCustomForm({ name: '', met: '', type: 'weight', muscle: '', equipment: '맨몸' }) }}
+              onClose={() => setPickerOpen(false)}
+            />
           )}
 
           {customForm && (
@@ -237,6 +239,13 @@ export default function Today() {
               <select value={customForm.type} onChange={e => setCustomForm({ ...customForm, type: e.target.value })}>
                 <option value="weight">웨이트</option>
                 <option value="cardio">유산소</option>
+              </select>
+              <select value={customForm.muscle} onChange={e => setCustomForm({ ...customForm, muscle: e.target.value })}>
+                <option value="">부위 선택 안 함</option>
+                {MUSCLES.map(m => <option key={m} value={m}>{m}</option>)}
+              </select>
+              <select value={customForm.equipment} onChange={e => setCustomForm({ ...customForm, equipment: e.target.value })}>
+                {EQUIPMENT.map(eq => <option key={eq} value={eq}>{eq}</option>)}
               </select>
               <button onClick={saveCustomExercise}>저장</button>
               <button onClick={() => setCustomForm(null)}>취소</button>

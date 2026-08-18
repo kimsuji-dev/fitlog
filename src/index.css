@@ -332,3 +332,93 @@ input:focus, textarea:focus, select:focus {
   width: 100%;
   text-align: left;
 }
+
+/* ── 운동 종목 선택기 (ExercisePicker) ── */
+.exercise-picker {
+  padding: 12px;
+}
+
+.picker-search {
+  width: 100%;
+}
+
+.chip-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip-row-scroll {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.chip {
+  flex: none;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  background: var(--tertiary-color);
+  white-space: nowrap;
+}
+
+.chip.active {
+  background: var(--primary-color);
+  box-shadow: var(--pixel-shadow-sm);
+  transform: translate(2px, 2px);
+}
+
+.picker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.picker-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f3e6c1;
+  border: var(--pixel-border);
+  padding: 6px 8px;
+}
+
+.picker-row-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 4px;
+  text-align: left;
+}
+
+.picker-row-main:active {
+  transform: none;
+  box-shadow: none;
+}
+
+.picker-row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.heart-btn {
+  font-size: 1.3rem;
+  color: var(--accent-color);
+}
+
+.muscle-map {
+  display: flex;
+  gap: 4px;
+  flex: none;
+}
+
+.muscle-map svg {
+  image-rendering: pixelated;
+}
