@@ -474,6 +474,66 @@ input:focus, textarea:focus, select:focus {
   color: var(--accent-color);
 }
 
+/* ── 운동 상세 화면 (ExerciseDetail) ── */
+.exercise-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-title {
+  font-size: 1.05rem;
+}
+
+.detail-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.detail-heading {
+  align-self: flex-start;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.detail-cues {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
+  padding: 0 2px;
+}
+
+.detail-cues li {
+  padding-left: 12px;
+  position: relative;
+}
+
+.detail-cues li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--primary-color);
+}
+
+.detail-muscle-names {
+  text-align: center;
+}
+
+.detail-disclaimer {
+  text-align: center;
+}
+
 /* ── 하단 가족 일러스트 ── */
 .family-illustration-wrap {
   display: flex;
