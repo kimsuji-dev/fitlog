@@ -77,7 +77,7 @@ export default function Settings({ active } = {}) {
       <div className="card">
         <div>📏 키</div>
         <div className="set-row">
-          <input type="number" value={heightCm} onChange={e => setHeightCm(e.target.value)} placeholder="cm" />
+          <input type="text" inputMode="decimal" value={heightCm} onChange={e => setHeightCm(e.target.value)} placeholder="cm" />
           <span>cm</span>
           <button onClick={saveHeight}>저장</button>
         </div>
@@ -86,7 +86,7 @@ export default function Settings({ active } = {}) {
       <div className="card">
         <div>⚖️ 몸무게</div>
         <div className="set-row">
-          <input type="number" value={weightKg} onChange={e => setWeightKg(e.target.value)} placeholder="kg" />
+          <input type="text" inputMode="decimal" value={weightKg} onChange={e => setWeightKg(e.target.value)} placeholder="kg" />
           <span>kg</span>
           <button onClick={saveWeight}>오늘 기록</button>
         </div>

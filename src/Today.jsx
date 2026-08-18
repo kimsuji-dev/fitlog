@@ -253,7 +253,7 @@ export default function Today() {
         ) : (
           <div className="set-row">
             <input
-              type="number" inputMode="decimal" value={weightInput}
+              type="text" inputMode="decimal" value={weightInput}
               onChange={e => setWeightInput(e.target.value)} placeholder="kg"
             />
             <span>kg</span>
