@@ -91,6 +91,18 @@ export default function Settings({ active } = {}) {
       </div>
 
       {msg && <div className="notice">{msg}</div>}
+
+      <div className="card">
+        <div>📚 건강 정보 출처</div>
+        <div className="text-sm">
+          2023 International Evidence-based Guideline for the Assessment and Management of PCOS (Monash University / ASRM)
+          <br />
+          Diabetes Care (2013): Three 15-min bouts of post-meal walking improve 24-h glycemic control
+          <br />
+          JCEM (2024): Inositol for PCOS — systematic review informing the 2023 PCOS guideline update
+        </div>
+        <div className="text-sm">이 앱의 건강 문구는 일반적인 정보이며, 진료를 대신하지 않아요.</div>
+      </div>
     </div>
   )
 }
