@@ -201,7 +201,7 @@ export default function Today() {
           {entries.map((e, i) => (
             <div key={i} className="entry-row">
               <div className="entry-header">
-                {e.type === 'weight' && <MuscleMap muscles={e.muscles || []} size={40} />}
+                {e.type === 'weight' && <MuscleMap muscles={e.muscles || []} size={36} />}
                 <div className="entry-header-info">
                   <strong>{e.name}</strong>
                   {e.type === 'weight' && <span className="text-sm">볼륨 {entryVolume(e)}</span>}

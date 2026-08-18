@@ -7,13 +7,13 @@ const GRID = 24
 const WIFE = {
   palette: {
     O: 'var(--text-color)',
-    H: '#2e2018',
-    S: '#e8b083',
-    E: '#3a2415',
-    N: '#e0708f',
-    T: '#e8749a',
-    P: '#c65b7c',
-    K: '#3a2415',
+    H: '#4a3f6b',
+    S: '#f4c9a8',
+    E: '#3d3355',
+    N: '#f4a6c0',
+    T: '#f7bdd2',
+    P: '#c9c2e8',
+    K: '#3d3355',
   },
   rows: [
     '........................',
@@ -47,12 +47,12 @@ const WIFE = {
 const HUSBAND = {
   palette: {
     O: 'var(--text-color)',
-    B: '#231a14',
-    S: '#e8b083',
-    E: '#3a2415',
-    U: '#3f7fa0',
-    p: '#4a6b3d',
-    K: '#3a2415',
+    B: '#4a3f6b',
+    S: '#f4c9a8',
+    E: '#3d3355',
+    U: '#9fc9c2',
+    p: '#7a6fa8',
+    K: '#3d3355',
   },
   rows: [
     '........................',
@@ -85,13 +85,13 @@ const HUSBAND = {
 // 후광과 작은 날개를 단 통통한 아기천사 — 하늘에서 떠다닌다
 const ANGEL = {
   palette: {
-    O: '#f2c14e',
-    H: '#caa15a',
-    S: '#f6c9a0',
-    E: '#3a2415',
-    N: '#f2a0b0',
-    W: '#fdf6e3',
-    C: '#f3e6bd',
+    O: '#f7d488',
+    H: '#e8cfa0',
+    S: '#f4c9a8',
+    E: '#3d3355',
+    N: '#f7bdd2',
+    W: '#fdf8f4',
+    C: '#ece7fb',
   },
   rows: [
     '.........OOOOOO.........',
@@ -135,7 +135,7 @@ if (import.meta.env.DEV) {
   assertGrid('ANGEL', ANGEL)
 }
 
-function PixelSprite({ def, size = 64, delay = 0, className = 'critter-sprite' }) {
+function PixelSprite({ def, size = 42, delay = 0, className = 'critter-sprite' }) {
   const { palette, rows } = def
   const cells = []
   rows.forEach((row, y) => {
@@ -175,7 +175,7 @@ export default function Critters() {
 export function SkyAngel() {
   return (
     <div className="sky-angel" aria-hidden="true">
-      <PixelSprite def={ANGEL} size={40} className="angel-sprite" />
+      <PixelSprite def={ANGEL} size={34} className="angel-sprite" />
     </div>
   )
 }

@@ -70,7 +70,7 @@ const BACK_ROWS = [
   '.....vvvvvv.....',
 ]
 
-const NEUTRAL = '#c9a876'
+const NEUTRAL = '#cbc3e8'
 const HILITE = 'var(--accent-color)'
 
 function BodySilhouette({ rows, map, active, size }) {
@@ -98,7 +98,7 @@ const BACK_MUSCLES = new Set(['등', '삼두', '둔근', '햄스트링', '종아
 
 // muscles=['가슴','삼두'] 처럼 넘기면 해당 부위가 속한 뷰만(또는 둘 다) 나란히 그린다.
 // '전신'이거나 muscles가 비어 있으면 앞/뒤 둘 다 중립색으로 보여준다.
-export default function MuscleMap({ muscles = [], size = 48 }) {
+export default function MuscleMap({ muscles = [], size = 36 }) {
   const active = new Set(muscles)
   const wantsFront = muscles.length === 0 || muscles.includes('전신') || muscles.some(m => FRONT_MUSCLES.has(m))
   const wantsBack = muscles.length === 0 || muscles.includes('전신') || muscles.some(m => BACK_MUSCLES.has(m))
