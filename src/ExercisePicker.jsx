@@ -105,7 +105,7 @@ export default function ExercisePicker({ exercises, onSelect, onAddCustom, onClo
         {list.map(ex => (
           <div key={ex.name} className="picker-row">
             <button className="picker-row-main" onClick={() => onSelect(ex)}>
-              <MuscleMap muscles={ex.muscles || []} size={40} />
+              <MuscleMap muscles={ex.muscles || []} size={54} />
               <div className="picker-row-info">
                 <strong>{ex.name}</strong>
                 <span className="text-sm">{(ex.muscles || []).join(' · ') || '부위 미지정'}</span>

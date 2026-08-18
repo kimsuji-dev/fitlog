@@ -1,165 +1,148 @@
-// 오리지널 픽셀 근육 지도 — 앞모습/뒷모습을 32x40 그리드로 그리고,
+// 오리지널 픽셀 근육 지도 — 앞모습 단일 대형 바디를 40x56 그리드로 그리고,
 // 선택된 부위 셀만 강조 바이올렛으로 칠한다. Critters.jsx와 동일한 <rect> 기법 +
 // 공유 팔레트(pixelPalette.js)를 사용해 톤을 맞춘다.
+//
+// 뒷면 근육(등/삼두/둔근/햄스트링/종아리)은 실루엣이 앞모습뿐이라 각자 대응하는
+// 앞모습 위치(등=몸통 바깥쪽 라인, 삼두=팔 바깥쪽 라인, 둔근=엉덩이 상단 밴드,
+// 햄스트링=허벅지 바깥쪽 라인, 종아리=아랫다리 전체)에 그리되, 활성화됐을 때
+// hiliteShadow를 기본톤으로 써서(hilite보다 어두움) "뒷면 부위" 표시를 준다.
 //
 // 명암: 각 근육 블록의 맨 윗줄은 하이라이트, 아랫줄은 그림자 톤으로 칠해
 // (활성/비활성 상관없이) 입체감을 준다 — 광원은 좌상단.
 
 import { PALETTE } from './pixelPalette'
 
-const W = 32
-const H = 40
+const W = 40
+const H = 56
 
 // 문자 → 근육 그룹 이름 (null이면 신체 셀이지만 특정 근육에 매핑되지 않음)
-const FRONT_MAP = { h: null, s: '어깨', c: '가슴', b: '이두', f: null, a: '복근', p: null, g: '대퇴사두', l: null }
-const BACK_MAP = { h: null, s: '어깨', k: '등', t: '삼두', d: '둔근', m: '햄스트링', v: '종아리' }
+const MAP = {
+  h: null, n: null, e: null, // 머리/목, 팔뚝+손, 발 — 근육 없음
+  s: '어깨', c: '가슴', b: '이두', a: '복근', g: '대퇴사두', // 앞모습 근육
+  T: '삼두', k: '등', d: '둔근', m: '햄스트링', v: '종아리', // 뒷모습 근육 → 대응 위치에 표시
+}
 
-// 좌우 대칭이라 각 줄은 왼쪽 절반만 다듬고 오른쪽은 좌우 반전 결과를 그대로 적었다.
-const FRONT_ROWS = [
-  '..............hhhh..............',
-  '.............hhhhhh.............',
-  '............ohhhhhho............',
-  '............ohhhhhho............',
-  '.............ohhhho.............',
-  '......osssssssssssssssssso......',
-  '..osssss.obbbbbbbbbbbbo.ssssso..',
-  '.ossss.obbbbbbbbbbbbbbbbo.sssso.',
-  '.occcc.obbbbbbbbbbbbbbbbo.cccco.',
-  '.occccc.obbbbbbbbbbbbbbo.ccccco.',
-  '.occcccc.obbbbbbbbbbbbo.cccccco.',
-  '.occcccc.obbbbbbbbbbbbo.cccccco.',
-  '..occcccc.offffffffffo.cccccco..',
-  '..occcccc.offffffffffo.cccccco..',
-  '...occcccc.offffffffo.cccccco...',
-  '....occcccccccccccccccccccco....',
-  '.....oaaaaaaaaaaaaaaaaaaaao.....',
-  '.....oaaaaaaaaaaaaaaaaaaaao.....',
-  '.....oaaaaaaaaaaaaaaaaaaaao.....',
-  '......oaaaaaaaaaaaaaaaaaao......',
-  '......oaaaaaaaaaaaaaaaaaao......',
-  '......oaaaaaaaaaaaaaaaaaao......',
-  '....oppppppppppppppppppppppo....',
-  '...oppppppppppppppppppppppppo...',
-  '...oppppppppppppppppppppppppo...',
-  '......ogggggg......ggggggo......',
-  '......ogggggg......ggggggo......',
-  '......ogggggg......ggggggo......',
-  '......ogggggg......ggggggo......',
-  '......ogggggg......ggggggo......',
-  '......ogggggg......ggggggo......',
-  '......ogggggg......ggggggo......',
-  '......ogggggg......ggggggo......',
-  '......ogggggg......ggggggo......',
-  '........ollll......llllo........',
-  '........ollll......llllo........',
-  '........ollll......llllo........',
-  '........ollll......llllo........',
-  '........ollll......llllo........',
-  '........ollll......llllo........',
-]
+// 뒷모습 근육(활성 시 더 어두운 바이올렛으로 "뒷면" 표시)
+const BACK_CHARS = new Set(['T', 'k', 'd', 'm', 'v'])
 
-const BACK_ROWS = [
-  '..............hhhh..............',
-  '.............hhhhhh.............',
-  '............ohhhhhho............',
-  '............ohhhhhho............',
-  '.............ohhhho.............',
-  '......osssssssssssssssssso......',
-  '..osssss.otttttttttttto.ssssso..',
-  '.ossss.otttttttttttttttto.sssso.',
-  '.okkkk.otttttttttttttttto.kkkko.',
-  '.okkkkk.otttttttttttttto.kkkkko.',
-  '.okkkkkk.otttttttttttto.kkkkkko.',
-  '.okkkkkk.otttttttttttto.kkkkkko.',
-  '..okkkkkk.otttttttttto.kkkkkko..',
-  '..okkkkkk.otttttttttto.kkkkkko..',
-  '...okkkkkk.otttttttto.kkkkkko...',
-  '....okkkkkkkkkkkkkkkkkkkkkko....',
-  '.....okkkkkkkkkkkkkkkkkkkko.....',
-  '.....okkkkkkkkkkkkkkkkkkkko.....',
-  '.....okkkkkkkkkkkkkkkkkkkko.....',
-  '......okkkkkkkkkkkkkkkkkko......',
-  '......okkkkkkkkkkkkkkkkkko......',
-  '......okkkkkkkkkkkkkkkkkko......',
-  '....oddddddddddddddddddddddo....',
-  '...oddddddddddddddddddddddddo...',
-  '...oddddddddddddddddddddddddo...',
-  '......ommmmmm......mmmmmmo......',
-  '......ommmmmm......mmmmmmo......',
-  '......ommmmmm......mmmmmmo......',
-  '......ommmmmm......mmmmmmo......',
-  '......ommmmmm......mmmmmmo......',
-  '......ommmmmm......mmmmmmo......',
-  '......ommmmmm......mmmmmmo......',
-  '......ommmmmm......mmmmmmo......',
-  '......ommmmmm......mmmmmmo......',
-  '........ovvvv......vvvvo........',
-  '........ovvvv......vvvvo........',
-  '........ovvvv......vvvvo........',
-  '........ovvvv......vvvvo........',
-  '........ovvvv......vvvvo........',
-  '........ovvvv......vvvvo........',
+// 좌우 대칭이라 왼쪽 절반만 다듬고 오른쪽은 좌우 반전 결과를 그대로 적었다.
+const ROWS = [
+  '................hhhhhhhh................',
+  '..............hhhhhhhhhhhh..............',
+  '.............ohhhhhhhhhhhho.............',
+  '.............ohhhhhhhhhhhho.............',
+  '.............ohhhhhhhhhhhho.............',
+  '.............ohhhhhhhhhhhho.............',
+  '..............ohhhhhhhhhho..............',
+  '...............ohhhhhhhho...............',
+  '...............ohhhhhhhho...............',
+  '......osssss.occcccccccccco.ssssso......',
+  '...ossssss.okkcccccccccccckko.sssssso...',
+  '...oTTobb.okoccccccccccccccoko.bboTTo...',
+  '...oTTobb.okoccccccccccccccoko.bboTTo...',
+  '...oTTobb.okoccccccccccccccoko.bboTTo...',
+  '...oTTobbb.okoccccccccccccoko.bbboTTo...',
+  '....oTobbb.okoccccccccccccoko.bbboTo....',
+  '....oTobbb.okoccccccccccccoko.bbboTo....',
+  '....oTobbb.okoccccccccccccoko.bbboTo....',
+  '.....oTobb.okoccccccccccccoko.bboTo.....',
+  '.....oTobb.okoccccccccccccoko.bboTo.....',
+  '.....oTobb.okoccccccccccccoko.bboTo.....',
+  '......onn.okoaaaaaaaaaaaaaaoko.nno......',
+  '......onn.okoaaaaaaaaaaaaaaoko.nno......',
+  '......on.okoaaaaaaaaaaaaaaaaoko.no......',
+  '......on.okoaaaaaaaaaaaaaaaaoko.no......',
+  '......on.okoaaaaaaaaaaaaaaaaoko.no......',
+  '......okkoaaaaaaaaaaaaaaaaaaaaokko......',
+  '........okoaaaaaaaaaaaaaaaaaaoko........',
+  '.........okoaaaaaaaaaaaaaaaaoko.........',
+  '.........okoaaaaaaaaaaaaaaaaoko.........',
+  '......oddddddddddddddddddddddddddo......',
+  '......oddddddddddddddddddddddddddo......',
+  '......omogggggggggg..ggggggggggomo......',
+  '......omogggggggggg..ggggggggggomo......',
+  '......omoggggggggg....gggggggggomo......',
+  '......omoggggggggg....gggggggggomo......',
+  '......omogggggggg......ggggggggomo......',
+  '......omogggggggg......ggggggggomo......',
+  '......omoggggggg........gggggggomo......',
+  '......omoggggggg........gggggggomo......',
+  '......omogggggg..........ggggggomo......',
+  '......omoggggg............gggggomo......',
+  '.........oggggg..........gggggo.........',
+  '.........oggggg..........gggggo.........',
+  '.........ovvvvv..........vvvvvo.........',
+  '.........ovvvvv..........vvvvvo.........',
+  '.........ovvvvv..........vvvvvo.........',
+  '.........ovvvvv..........vvvvvo.........',
+  '.........ovvvvv..........vvvvvo.........',
+  '.........ovvvvv..........vvvvvo.........',
+  '.........ovvvvv..........vvvvvo.........',
+  '.........ovvvvv..........vvvvvo.........',
+  '........oeeeeee..........eeeeeeo........',
+  '.......oeeeeeee..........eeeeeeeo.......',
+  '.......oeeeeeee..........eeeeeeeo.......',
+  '.......oeeeeeee..........eeeeeeeo.......',
 ]
 
 if (import.meta.env.DEV) {
-  ;[['FRONT_ROWS', FRONT_ROWS], ['BACK_ROWS', BACK_ROWS]].forEach(([name, rows]) => {
-    rows.forEach((row, i) => {
-      if (row.length !== W) {
-        throw new Error(`MuscleMap.jsx: ${name} row ${i} has length ${row.length}, expected ${W}`)
-      }
-    })
-    if (rows.length !== H) {
-      throw new Error(`MuscleMap.jsx: ${name} has ${rows.length} rows, expected ${H}`)
+  ROWS.forEach((row, i) => {
+    if (row.length !== W) {
+      throw new Error(`MuscleMap.jsx: ROWS row ${i} has length ${row.length}, expected ${W}`)
     }
   })
+  if (ROWS.length !== H) {
+    throw new Error(`MuscleMap.jsx: ROWS has ${ROWS.length} rows, expected ${H}`)
+  }
 }
 
 // 각 근육 블록의 맨 윗줄(하이라이트) / 아랫줄(그림자) — 활성 여부와 무관하게 입체감을 준다.
-const HIGHLIGHT_ROWS = new Set([5, 8, 16, 25])
-const SHADOW_ROWS = new Set([12, 13, 14, 19, 20, 21, 31, 32, 33, 37, 38, 39])
+const HIGHLIGHT_ROWS = new Set([9, 11, 21, 30, 32, 44])
+const SHADOW_ROWS = new Set([20, 26, 29, 31, 41, 43, 51])
 
-function toneFor(y, on) {
-  const [base, shadow, highlight] = on
-    ? [PALETTE.hilite, PALETTE.hiliteShadow, PALETTE.hiliteHighlight]
-    : [PALETTE.neutral, PALETTE.neutralShadow, PALETTE.neutralHighlight]
-  if (SHADOW_ROWS.has(y)) return shadow
-  if (HIGHLIGHT_ROWS.has(y)) return highlight
-  return base
+function toneFor(y, ch, on) {
+  if (!on) {
+    if (SHADOW_ROWS.has(y)) return PALETTE.neutralShadow
+    if (HIGHLIGHT_ROWS.has(y)) return PALETTE.neutralHighlight
+    return PALETTE.neutral
+  }
+  // 뒷모습 근육은 활성 시 기본톤 자체를 한 단계 어둡게(hiliteShadow) 써서 구분한다.
+  if (BACK_CHARS.has(ch)) {
+    return HIGHLIGHT_ROWS.has(y) ? PALETTE.hilite : PALETTE.hiliteShadow
+  }
+  if (SHADOW_ROWS.has(y)) return PALETTE.hiliteShadow
+  if (HIGHLIGHT_ROWS.has(y)) return PALETTE.hiliteHighlight
+  return PALETTE.hilite
 }
 
-function BodySilhouette({ rows, map, active, size }) {
+// muscles=['가슴','삼두'] 처럼 넘기면 해당 부위 셀만 강조 바이올렛으로 칠한다.
+// '전신'이거나 muscles가 비어 있으면 전신을 중립색으로 보여준다.
+export default function MuscleMap({ muscles = [], size = 40 }) {
+  const active = new Set(muscles)
+  const allOn = muscles.length === 0 || muscles.includes('전신')
+
   const cells = []
-  rows.forEach((row, y) => {
+  ROWS.forEach((row, y) => {
     for (let x = 0; x < row.length; x++) {
       const ch = row[x]
       if (ch === '.') continue
-      const fill = ch === 'o' ? PALETTE.outline : toneFor(y, map[ch] && active.has(map[ch]))
-      cells.push(
-        <rect key={`${x}-${y}`} x={x} y={y} width={1} height={1} fill={fill} />
-      )
+      let fill
+      if (ch === 'o') {
+        fill = PALETTE.outline
+      } else {
+        const name = MAP[ch]
+        const on = allOn || (name !== null && active.has(name))
+        fill = toneFor(y, ch, on)
+      }
+      cells.push(<rect key={`${x}-${y}`} x={x} y={y} width={1} height={1} fill={fill} />)
     }
   })
-  return (
-    <svg width={size} height={(size / W) * H} viewBox={`0 0 ${W} ${H}`} shapeRendering="crispEdges">
-      {cells}
-    </svg>
-  )
-}
-
-const FRONT_MUSCLES = new Set(['가슴', '복근', '이두', '대퇴사두', '어깨'])
-const BACK_MUSCLES = new Set(['등', '삼두', '둔근', '햄스트링', '종아리'])
-
-// muscles=['가슴','삼두'] 처럼 넘기면 해당 부위가 속한 뷰만(또는 둘 다) 나란히 그린다.
-// '전신'이거나 muscles가 비어 있으면 앞/뒤 둘 다 중립색으로 보여준다.
-export default function MuscleMap({ muscles = [], size = 36 }) {
-  const active = new Set(muscles)
-  const wantsFront = muscles.length === 0 || muscles.includes('전신') || muscles.some(m => FRONT_MUSCLES.has(m))
-  const wantsBack = muscles.length === 0 || muscles.includes('전신') || muscles.some(m => BACK_MUSCLES.has(m))
 
   return (
     <div className="muscle-map" aria-hidden="true">
-      {wantsFront && <BodySilhouette rows={FRONT_ROWS} map={FRONT_MAP} active={active} size={size} />}
-      {wantsBack && <BodySilhouette rows={BACK_ROWS} map={BACK_MAP} active={active} size={size} />}
+      <svg width={size} height={(size / W) * H} viewBox={`0 0 ${W} ${H}`} shapeRendering="crispEdges">
+        {cells}
+      </svg>
     </div>
   )
 }

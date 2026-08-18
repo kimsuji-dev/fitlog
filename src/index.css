@@ -508,7 +508,6 @@ input:focus, textarea:focus, select:focus {
 
 .muscle-map {
   display: flex;
-  gap: 4px;
   flex: none;
 }
 
