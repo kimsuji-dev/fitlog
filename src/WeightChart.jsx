@@ -3,9 +3,9 @@ const W = 320
 const H = 140
 const PAD = { top: 16, right: 12, bottom: 24, left: 36 }
 
-const LINE_COLOR = '#e6437e' // primary-color 계열의 진한 톤 — 흰 카드 위 대비 확보
-const POINT_COLOR = '#e6437e'
-const PERIOD_FILL = 'rgba(230, 60, 90, 0.16)' // 반투명 붉은 밴드
+const LINE_COLOR = '#7c6cf0' // primary-color 계열 — 흰 카드 위 대비 확보
+const POINT_COLOR = '#7c6cf0'
+const PERIOD_FILL = 'rgba(224, 90, 90, 0.14)' // 반투명 붉은 밴드
 const POINT_SIZE = 6
 
 const todayStr = () => new Date().toLocaleDateString('sv-SE')
@@ -62,7 +62,7 @@ export default function WeightChart({ weights, periods }) {
         ))}
         <polyline points={polyline} fill="none" stroke={LINE_COLOR} strokeWidth="3" strokeLinejoin="miter" strokeLinecap="square" />
         {points.map((p, i) => (
-          <rect key={i} x={p.x - POINT_SIZE / 2} y={p.y - POINT_SIZE / 2} width={POINT_SIZE} height={POINT_SIZE} fill={POINT_COLOR} stroke="#fdf8f4" strokeWidth="1" />
+          <rect key={i} x={p.x - POINT_SIZE / 2} y={p.y - POINT_SIZE / 2} width={POINT_SIZE} height={POINT_SIZE} fill={POINT_COLOR} stroke="#ffffff" strokeWidth="1" />
         ))}
         <text x={PAD.left} y={H - 6} fontSize="9" fill="var(--text-color)" textAnchor="start">{dates[0].slice(5)}</text>
         <text x={W - PAD.right} y={H - 6} fontSize="9" fill="var(--text-color)" textAnchor="end">{dates[dates.length - 1].slice(5)}</text>

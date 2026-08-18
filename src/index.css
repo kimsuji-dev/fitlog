@@ -1,17 +1,16 @@
 :root {
-  --primary-color: #f4a6c0;   /* 블러쉬 핑크 — 활성 탭, 선택 강조 */
-  --secondary-color: #a8d8c8; /* 소프트 민트 — 저장/성공/메인 액션 */
-  --tertiary-color: #ece7fb;  /* 라일락 크림 — 하이라이트, 알림 바탕 */
-  --accent-color: #d9718f;    /* 로즈 — 삭제/생리 강조 */
-  --text-color: #3d3355;      /* 진한 네이비퍼플 — 크림 위에서도 또렷 */
-  --border-color: #3d3355;    /* 네이비퍼플 테두리 */
-  --border-radius: 0px;
-  --shadow: 2px 2px 0 #3d3355;
-  --pixel-border: 2px solid #3d3355;
-  --pixel-shadow: 2px 2px 0 #3d3355;
-  --pixel-shadow-sm: 1px 1px 0 #3d3355;
-  --bg-color: #e8e4f8;
-  --panel-color: #fdf8f4;     /* 크림 패널 배경 */
+  --primary-color: #7c6cf0;   /* 소프트 바이올렛 — 주요 액션, 활성 탭, 강조 */
+  --primary-color-soft: #ece9fc; /* 바이올렛 연한 배경 (칩/포커스 링용) */
+  --secondary-color: #3fbf9a; /* 민트 — 성공/저장 */
+  --tertiary-color: #f2f1f7;  /* 라이트 라일락 그레이 — 서브 배경 */
+  --accent-color: #e05a5a;    /* 코럴 레드 — 삭제/경고/생리 강조 */
+  --text-color: #1f1d2b;      /* 진한 잉크 — 본문 텍스트 */
+  --text-muted: #6b6880;      /* 뮤트 텍스트 — 라벨/보조 정보 */
+  --border-color: #ececf3;    /* 헤어라인 */
+  --border-radius: 14px;
+  --shadow: 0 1px 2px rgba(20, 18, 40, .06), 0 4px 12px rgba(20, 18, 40, .04);
+  --bg-color: #f7f6fb;
+  --panel-color: #ffffff;     /* 카드 배경 */
 }
 
 * {
@@ -20,16 +19,17 @@
   box-sizing: border-box;
 }
 
+.pixel-type {
+  font-family: 'NeoDunggeunmo', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
 body {
-  font-family: 'NeoDunggeunmo', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard', 'Noto Sans KR', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--bg-color);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' shape-rendering='crispEdges'%3E%3Crect width='32' height='32' fill='%23e8e4f8'/%3E%3Crect x='4' y='6' width='2' height='2' fill='%23dcd6f2'/%3E%3Crect x='22' y='5' width='1' height='1' fill='%23f4a6c0'/%3E%3Crect x='15' y='21' width='2' height='2' fill='%23dcd6f2'/%3E%3Crect x='27' y='25' width='1' height='1' fill='%23a8d8c8'/%3E%3Crect x='9' y='27' width='1' height='1' fill='%23f4a6c0'/%3E%3C/svg%3E");
-  background-repeat: repeat;
   color: var(--text-color);
   min-height: 100vh;
-  image-rendering: pixelated;
 }
 
 #root {
@@ -39,68 +39,59 @@ body {
 }
 
 h2 {
-  position: relative;
-  padding-bottom: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 
 h2::after {
-  content: '';
-  display: block;
-  width: 60px;
-  height: 10px;
-  margin-top: 6px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='10' shape-rendering='crispEdges'%3E%3Crect x='2' y='6' width='2' height='4' fill='%23a89bd6'/%3E%3Crect x='0' y='2' width='6' height='4' fill='%23f4a6c0'/%3E%3Crect x='2' y='2' width='2' height='2' fill='%23f7d488'/%3E%3Crect x='26' y='6' width='2' height='4' fill='%23a89bd6'/%3E%3Crect x='24' y='2' width='6' height='4' fill='%23f7d488'/%3E%3Crect x='26' y='2' width='2' height='2' fill='%23f4a6c0'/%3E%3Crect x='50' y='6' width='2' height='4' fill='%23a89bd6'/%3E%3Crect x='48' y='2' width='6' height='4' fill='%23a8d8c8'/%3E%3Crect x='50' y='2' width='2' height='2' fill='%23f7d488'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
+  content: none;
 }
 
 button {
   font-family: inherit;
   font-size: 1rem;
   cursor: pointer;
-  border: var(--pixel-border);
-  border-radius: var(--border-radius);
+  border: none;
+  border-radius: 12px;
   padding: 12px 20px;
-  background: var(--panel-color);
+  background: var(--tertiary-color);
   color: var(--text-color);
-  transition: transform 0.05s ease, box-shadow 0.05s ease;
-  box-shadow: var(--pixel-shadow);
+  transition: opacity 0.1s ease, transform 0.1s ease;
 }
 
 button:active {
-  transform: translate(1px, 1px);
-  box-shadow: var(--pixel-shadow-sm);
+  opacity: 0.7;
 }
 
 button:disabled {
   opacity: 0.5;
   cursor: default;
-  transform: none;
-  box-shadow: var(--pixel-shadow);
 }
 
 input, textarea, select {
   font-family: inherit;
+  font-variant-numeric: tabular-nums;
   padding: 12px 14px;
-  border: var(--pixel-border);
-  border-radius: var(--border-radius);
+  border: 2px solid transparent;
+  border-radius: 10px;
   font-size: 1rem;
-  background: var(--panel-color);
+  background: var(--tertiary-color);
   color: var(--text-color);
 }
 
 input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: var(--pixel-shadow-sm);
+  box-shadow: 0 0 0 2px var(--primary-color-soft);
 }
 
 .card {
   background: var(--panel-color);
-  border: var(--pixel-border);
   border-radius: var(--border-radius);
-  box-shadow: var(--pixel-shadow);
+  box-shadow: var(--shadow);
   padding: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -110,40 +101,39 @@ input:focus, textarea:focus, select:focus {
   display: block;
   position: relative;
   width: 100%;
-  background: var(--secondary-color);
-  font-size: 1.15rem;
-  font-weight: bold;
-  padding: 18px;
-  margin-bottom: 16px;
+  background: var(--primary-color);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 14px 18px;
+  min-height: 48px;
+  border-radius: 12px;
+  margin-bottom: 12px;
 }
 
 .big-btn::after {
-  content: '';
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  width: 14px;
-  height: 14px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' shape-rendering='crispEdges'%3E%3Crect x='4' y='2' width='4' height='4' fill='%23fdf8f4'/%3E%3Crect x='2' y='6' width='4' height='4' fill='%23fdf8f4'/%3E%3Crect x='6' y='6' width='4' height='4' fill='%23fdf8f4'/%3E%3Crect x='4' y='10' width='4' height='2' fill='%233d3355'/%3E%3C/svg%3E");
-  opacity: 0.85;
+  content: none;
 }
 
 .icon-btn {
   background: transparent;
-  box-shadow: none;
   border: none;
-  padding: 4px 8px;
+  padding: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
 }
 
 .icon-btn:active {
-  transform: none;
-  box-shadow: none;
+  opacity: 0.6;
 }
 
 .entry-row {
-  border: var(--pixel-border);
-  border-radius: var(--border-radius);
-  padding: 10px;
+  border-radius: 12px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -176,7 +166,6 @@ input:focus, textarea:focus, select:focus {
 .set-table {
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
 .set-table-header,
@@ -188,14 +177,23 @@ input:focus, textarea:focus, select:focus {
 }
 
 .set-table-header {
-  font-size: 0.8rem;
-  font-weight: bold;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
   text-align: center;
+  padding-bottom: 6px;
+}
+
+.set-table-row {
+  padding: 6px 0;
+  border-top: 1px solid var(--border-color);
 }
 
 .set-num {
   text-align: center;
-  font-weight: bold;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
 }
 
 .set-table-row input {
@@ -203,11 +201,12 @@ input:focus, textarea:focus, select:focus {
   min-width: 0;
   padding: 8px 6px;
   text-align: center;
+  font-variant-numeric: tabular-nums;
+  background: var(--panel-color);
 }
 
 .set-done-btn {
   background: transparent;
-  box-shadow: none;
   border: none;
   padding: 2px;
   font-size: 1.3rem;
@@ -215,13 +214,13 @@ input:focus, textarea:focus, select:focus {
 }
 
 .set-done-btn:active {
-  transform: none;
-  box-shadow: none;
+  opacity: 0.6;
 }
 
 .rest-timer-display {
-  font-size: 1.8rem;
-  font-weight: bold;
+  font-size: 24px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
   text-align: center;
 }
 
@@ -243,12 +242,14 @@ input:focus, textarea:focus, select:focus {
 
 .rest-timer-controls button {
   min-width: 56px;
-  font-size: 1.2rem;
-  font-weight: bold;
+  min-height: 44px;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .rest-timer-play {
-  background: var(--secondary-color);
+  background: var(--primary-color);
+  color: #fff;
 }
 
 .exercise-grid {
@@ -263,33 +264,34 @@ input:focus, textarea:focus, select:focus {
 }
 
 .diet-row button {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   background: var(--tertiary-color);
+  min-width: 48px;
+  min-height: 48px;
 }
 
 .diet-row button.selected {
-  background: var(--primary-color);
-  box-shadow: var(--pixel-shadow-sm);
-  transform: translate(1px, 1px);
+  background: var(--primary-color-soft);
+  box-shadow: inset 0 0 0 2px var(--primary-color);
 }
 
 .notice {
   background: var(--tertiary-color);
-  border: var(--pixel-border);
-  border-radius: var(--border-radius);
-  box-shadow: var(--pixel-shadow);
+  border-radius: 12px;
   padding: 12px 14px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   font-size: 0.9rem;
+  color: var(--text-muted);
 }
 
 .notice.success {
-  background: var(--secondary-color);
+  background: #e6f7f1;
+  color: #1f7a5c;
 }
 
 .notice.error {
-  background: #f7dce2;
-  border-color: var(--accent-color);
+  background: #fbebeb;
+  color: #b23c3c;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -300,7 +302,7 @@ input:focus, textarea:focus, select:focus {
   max-width: 480px;
   margin: 0 auto;
   padding: 12px;
-  padding-bottom: 80px;
+  padding-bottom: 88px;
 }
 
 .critter-strip {
@@ -359,36 +361,34 @@ input:focus, textarea:focus, select:focus {
   left: 0;
   right: 0;
   display: flex;
-  border-top: 2px solid var(--text-color);
+  border-top: 1px solid var(--border-color);
   background: var(--panel-color);
   z-index: 100;
 }
 
 .tab-nav button {
   flex: 1;
-  padding: 14px 8px;
+  padding: 12px 8px;
+  min-height: 56px;
   border: none;
   border-radius: 0;
   background: transparent;
-  box-shadow: none;
-  font-size: 0.95rem;
-  color: var(--text-color);
-  border-bottom: 4px solid transparent;
+  font-size: 0.85rem;
+  color: var(--text-muted);
 }
 
 .tab-nav button:active {
-  transform: none;
+  opacity: 0.7;
 }
 
 .tab-nav button.active {
-  font-weight: bold;
-  color: var(--text-color);
-  background: var(--tertiary-color);
-  border-bottom: 2px solid var(--primary-color);
+  font-weight: 600;
+  color: var(--primary-color);
 }
 
 .text-sm {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
 }
 
 .entry-list {
@@ -398,18 +398,16 @@ input:focus, textarea:focus, select:focus {
 }
 
 .nag-line {
-  background: var(--tertiary-color);
-  border: var(--pixel-border);
-  border-radius: var(--border-radius);
-  box-shadow: var(--pixel-shadow-sm);
+  background: var(--primary-color-soft);
+  color: var(--text-color);
+  border-radius: 12px;
   padding: 10px 14px;
-  margin-bottom: 16px;
-  font-size: 0.9rem;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
 }
 
 .nag-line.info {
-  background: #d9ecec;
-  border-color: #4f8a86;
+  background: #e3f3f1;
 }
 
 .toggle-btn {
@@ -421,7 +419,7 @@ input:focus, textarea:focus, select:focus {
 
 /* ── 운동 종목 선택기 (ExercisePicker) ── */
 .exercise-picker {
-  padding: 12px;
+  padding: 16px;
 }
 
 .picker-search {
@@ -438,26 +436,33 @@ input:focus, textarea:focus, select:focus {
   flex-wrap: nowrap;
   overflow-x: auto;
   padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.chip-row-scroll::-webkit-scrollbar {
+  display: none;
 }
 
 .chip {
   flex: none;
-  padding: 6px 10px;
+  padding: 8px 14px;
   font-size: 0.8rem;
+  border-radius: 999px;
   background: var(--tertiary-color);
+  color: var(--text-muted);
   white-space: nowrap;
+  min-height: 36px;
 }
 
 .chip.active {
   background: var(--primary-color);
-  box-shadow: var(--pixel-shadow-sm);
-  transform: translate(1px, 1px);
+  color: #fff;
 }
 
 .picker-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   max-height: 50vh;
   overflow-y: auto;
 }
@@ -467,7 +472,7 @@ input:focus, textarea:focus, select:focus {
   align-items: center;
   gap: 8px;
   background: var(--tertiary-color);
-  border: var(--pixel-border);
+  border-radius: 12px;
   padding: 6px 8px;
 }
 
@@ -478,14 +483,12 @@ input:focus, textarea:focus, select:focus {
   gap: 10px;
   background: transparent;
   border: none;
-  box-shadow: none;
   padding: 4px;
   text-align: left;
 }
 
 .picker-row-main:active {
-  transform: none;
-  box-shadow: none;
+  opacity: 0.7;
 }
 
 .picker-row-info {
@@ -496,6 +499,10 @@ input:focus, textarea:focus, select:focus {
 
 .heart-btn {
   font-size: 1.3rem;
+  color: var(--text-muted);
+}
+
+.heart-btn.active {
   color: var(--accent-color);
 }
 
