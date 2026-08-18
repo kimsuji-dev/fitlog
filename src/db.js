@@ -1,6 +1,6 @@
 import { openDB } from 'idb'
 
-const dbp = openDB('fitlog', 2, {
+const dbp = openDB('fitlog', 3, {
   upgrade(d, oldVersion) {
     if (oldVersion < 1) {
       d.createObjectStore('profile')
@@ -12,6 +12,9 @@ const dbp = openDB('fitlog', 2, {
     }
     if (oldVersion < 2) {
       d.createObjectStore('inositol')
+    }
+    if (oldVersion < 3) {
+      d.createObjectStore('restdays')
     }
   },
 })
@@ -28,6 +31,7 @@ export const listSessions = async () => (await (await dbp).getAll('sessions')).r
 
 export const setDiet = async (date, rating) => (await dbp).put('diet', rating, date)
 export const getDiet = async date => (await dbp).get('diet', date)
+export const listDietDates = async () => (await dbp).getAllKeys('diet')
 
 export const startPeriod = async date => (await dbp).put('periods', { start: date, end: null })
 export const endPeriod = async date => {
@@ -44,6 +48,11 @@ export const listCustomExercises = async () => (await dbp).getAll('customExercis
 
 export const setInositol = async (date, taken) => (await dbp).put('inositol', taken, date)
 export const getInositol = async date => Boolean(await (await dbp).get('inositol', date))
+export const listInositolDates = async () => (await dbp).getAllKeys('inositol')
+
+export const setRestDay = async (date, resting) => (await dbp).put('restdays', resting, date)
+export const getRestDay = async date => Boolean(await (await dbp).get('restdays', date))
+export const listRestDays = async () => (await dbp).getAllKeys('restdays')
 
 export const exportAll = async () => {
   const d = await dbp
@@ -55,5 +64,6 @@ export const exportAll = async () => {
     periods: await d.getAll('periods'),
     customExercises: await d.getAll('customExercises'),
     inositol: await Promise.all((await d.getAllKeys('inositol')).map(async k => ({ date: k, taken: await d.get('inositol', k) }))),
+    restdays: await Promise.all((await d.getAllKeys('restdays')).map(async k => ({ date: k, resting: await d.get('restdays', k) }))),
   }
 }

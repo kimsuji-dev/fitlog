@@ -37,7 +37,13 @@ describe('db', () => {
 
   it('exportAll은 모든 스토어를 담는다', async () => {
     const all = await db.exportAll()
-    for (const k of ['profile', 'weights', 'sessions', 'diet', 'periods', 'customExercises'])
+    for (const k of ['profile', 'weights', 'sessions', 'diet', 'periods', 'customExercises', 'inositol', 'restdays'])
       expect(all).toHaveProperty(k)
+  })
+
+  it('쉬는 날 저장/조회', async () => {
+    await db.setRestDay('2026-08-18', true)
+    expect(await db.getRestDay('2026-08-18')).toBe(true)
+    expect(await db.listRestDays()).toContain('2026-08-18')
   })
 })

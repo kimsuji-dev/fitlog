@@ -100,6 +100,10 @@ export default function Settings({ active } = {}) {
           Diabetes Care (2013): Three 15-min bouts of post-meal walking improve 24-h glycemic control
           <br />
           JCEM (2024): Inositol for PCOS — systematic review informing the 2023 PCOS guideline update
+          <br />
+          CDC: Folic Acid — About / Clinical overview (400 mcg daily, start ≥1 month before conception)
+          <br />
+          Fertility & Sterility (2022): Preconception weight reduction in women and men with obesity and infertility
         </div>
         <div className="text-sm">이 앱의 건강 문구는 일반적인 정보이며, 진료를 대신하지 않아요.</div>
       </div>

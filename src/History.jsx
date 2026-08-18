@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import WeightChart from './WeightChart'
-import { listSessions, listWeights, listPeriods, getDiet } from './db'
+import {
+  listSessions, listWeights, listPeriods, getDiet, listDietDates,
+  listRestDays, getRestDay, listInositolDates, getInositol,
+} from './db'
 import { volume } from './calc'
 
 const DIET_EMOJI = { good: '🥗', normal: '😐', pig: '🐷' }
@@ -25,17 +28,33 @@ export default function History({ active } = {}) {
   const [periods, setPeriods] = useState([])
   const [sessions, setSessions] = useState([])
   const [diets, setDiets] = useState({}) // date -> rating
+  const [inositolDays, setInositolDays] = useState({}) // date -> bool
+  const [restDays, setRestDays] = useState({}) // date -> bool
+  const [allDates, setAllDates] = useState([]) // 세션+식단+이노시톨+쉬는날, 최신순
   const [openDate, setOpenDate] = useState(null)
 
   useEffect(() => {
     if (!active) return
     (async () => {
-      const [w, p, s] = await Promise.all([listWeights(), listPeriods(), listSessions()])
+      const [w, p, s, dietDates, inositolDates, restDates] = await Promise.all([
+        listWeights(), listPeriods(), listSessions(), listDietDates(), listInositolDates(), listRestDays(),
+      ])
       setWeights(w)
       setPeriods(p)
       setSessions(s)
-      const entries = await Promise.all(s.map(async sess => [sess.date, await getDiet(sess.date)]))
-      setDiets(Object.fromEntries(entries))
+
+      const union = [...new Set([...s.map(sess => sess.date), ...dietDates, ...inositolDates, ...restDates])]
+      union.sort((a, b) => b.localeCompare(a)) // 최신순
+      setAllDates(union)
+
+      const [dietEntries, inositolEntries, restEntries] = await Promise.all([
+        Promise.all(union.map(async d => [d, await getDiet(d)])),
+        Promise.all(union.map(async d => [d, await getInositol(d)])),
+        Promise.all(union.map(async d => [d, await getRestDay(d)])),
+      ])
+      setDiets(Object.fromEntries(dietEntries))
+      setInositolDays(Object.fromEntries(inositolEntries))
+      setRestDays(Object.fromEntries(restEntries))
     })()
   }, [active])
 
@@ -70,36 +89,50 @@ export default function History({ active } = {}) {
         </div>
       )}
 
-      {sessions.length === 0 && <div className="card">아직 기록된 운동이 없어요 🐣</div>}
+      {allDates.length === 0 && <div className="card">아직 기록이 없어요 🐣</div>}
 
-      {sessions.map(s => {
-        const open = openDate === s.date
+      {allDates.map(date => {
+        const s = sessions.find(sess => sess.date === date)
+        if (s) {
+          const open = openDate === s.date
+          return (
+            <div key={s.date} className="card">
+              <button
+                className="icon-btn toggle-btn"
+                onClick={() => setOpenDate(open ? null : s.date)}
+              >
+                <span>
+                  {fmtDate(s.date)} {s.start}–{s.end} · 종목 {s.entries.length}개 · 볼륨 {volume(s)}kg
+                  {diets[s.date] && ` ${DIET_EMOJI[diets[s.date]]}`}
+                  {inositolDays[s.date] && ' 💊'}
+                  {inPeriod(s.date) && ' 🩸'}
+                </span>
+                <span>{open ? '▲' : '▼'}</span>
+              </button>
+              {open && (
+                <div className="entry-list">
+                  {s.entries.map((e, i) => (
+                    <div key={i} className="entry-row">
+                      <strong>{e.name}</strong>
+                      {e.type === 'weight'
+                        ? e.sets.map((set, si) => <div key={si}>{set.reps}회 × {set.kg}kg</div>)
+                        : <div>{e.minutes}분{e.km ? ` / ${e.km}km` : ''}</div>}
+                    </div>
+                  ))}
+                  {s.memo && <div className="text-sm">📝 {s.memo}</div>}
+                </div>
+              )}
+            </div>
+          )
+        }
         return (
-          <div key={s.date} className="card">
-            <button
-              className="icon-btn toggle-btn"
-              onClick={() => setOpenDate(open ? null : s.date)}
-            >
-              <span>
-                {fmtDate(s.date)} {s.start}–{s.end} · 종목 {s.entries.length}개 · 볼륨 {volume(s)}kg
-                {diets[s.date] && ` ${DIET_EMOJI[diets[s.date]]}`}
-                {inPeriod(s.date) && ' 🩸'}
-              </span>
-              <span>{open ? '▲' : '▼'}</span>
-            </button>
-            {open && (
-              <div className="entry-list">
-                {s.entries.map((e, i) => (
-                  <div key={i} className="entry-row">
-                    <strong>{e.name}</strong>
-                    {e.type === 'weight'
-                      ? e.sets.map((set, si) => <div key={si}>{set.reps}회 × {set.kg}kg</div>)
-                      : <div>{e.minutes}분{e.km ? ` / ${e.km}km` : ''}</div>}
-                  </div>
-                ))}
-                {s.memo && <div className="text-sm">📝 {s.memo}</div>}
-              </div>
-            )}
+          <div key={date} className="card">
+            <span>
+              {fmtDate(date)} {restDays[date] ? '쉬는 날 😴' : '기록만 있어요'}
+              {diets[date] && ` ${DIET_EMOJI[diets[date]]}`}
+              {inositolDays[date] && ' 💊'}
+              {inPeriod(date) && ' 🩸'}
+            </span>
           </div>
         )
       })}

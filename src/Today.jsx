@@ -3,7 +3,7 @@ import { BUILTIN } from './exercises'
 import {
   getProfile, addWeight, listWeights, saveSession, getSession, listSessions,
   setDiet, getDiet, startPeriod, endPeriod, isInPeriod, addCustomExercise, listCustomExercises,
-  setInositol, getInositol,
+  setInositol, getInositol, setRestDay, getRestDay,
 } from './db'
 import { calories, volume, stars as calcStars, recentAvgVolume } from './calc'
 import { buildEvent } from './calendarEvent'
@@ -38,6 +38,7 @@ export default function Today() {
   const [diet, setDietState] = useState(null)
   const [inPeriod, setInPeriod] = useState(false)
   const [inositol, setInositolState] = useState(false)
+  const [resting, setRestingState] = useState(false)
 
   const [weightAvailable, setWeightAvailable] = useState(true)
   const [saveState, setSaveState] = useState('idle') // idle | saving | saved | calendar_fail
@@ -64,6 +65,7 @@ export default function Today() {
       if (d) setDietState(d)
       setInPeriod(await isInPeriod(today))
       setInositolState(await getInositol(today))
+      setRestingState(await getRestDay(today))
 
       const weights = await listWeights()
       setWeightAvailable(weights.length > 0)
@@ -111,6 +113,12 @@ export default function Today() {
     const next = !inositol
     await setInositol(today, next)
     setInositolState(next)
+  }
+
+  async function handleRestToggle() {
+    const next = !resting
+    await setRestDay(today, next)
+    setRestingState(next)
   }
 
   async function handlePeriodToggle() {
@@ -262,6 +270,13 @@ export default function Today() {
         <div>💊 이노시톨</div>
         <button className="big-btn" onClick={handleInositolToggle}>
           {inositol ? '오늘 먹었어요 ✅' : '아직이에요'}
+        </button>
+      </div>
+
+      <div className="card">
+        <div>😴 오늘은 쉬어요</div>
+        <button className="big-btn" onClick={handleRestToggle}>
+          {resting ? '오늘은 쉬는 날 😴' : '😴 오늘은 쉬어요'}
         </button>
       </div>
 
