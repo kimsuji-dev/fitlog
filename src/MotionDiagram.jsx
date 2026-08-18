@@ -2,8 +2,8 @@
 // 66개 종목을 12개 움직임 패턴으로 묶은 스틱피겨 폴백을 그린다.
 import { useState } from 'react'
 
-const LINE = '#3a3350'
-const ACCENT = '#7c6cf0'
+const LINE = '#e8dfc8'
+const ACCENT = '#d4af37'
 
 // 관절 좌표(옆모습, 0~50 x 0~66)로 한 사람을 그린다.
 function Stickman({ j, weight }) {

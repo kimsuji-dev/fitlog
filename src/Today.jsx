@@ -374,7 +374,7 @@ export default function Today() {
 
       {started && (
         <button className="big-btn" onClick={handleFinish} disabled={saveState === 'saving'}>
-          ✅ 운동 종료 & 저장
+          ✅ 운동 종료 & 저장 💰
         </button>
       )}
 

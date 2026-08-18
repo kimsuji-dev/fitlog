@@ -3,9 +3,9 @@ const W = 320
 const H = 140
 const PAD = { top: 16, right: 12, bottom: 24, left: 36 }
 
-const LINE_COLOR = '#7c6cf0' // primary-color 계열 — 흰 카드 위 대비 확보
-const POINT_COLOR = '#7c6cf0'
-const PERIOD_FILL = 'rgba(224, 90, 90, 0.14)' // 반투명 붉은 밴드
+const LINE_COLOR = '#d4af37' // 골드 — 벨벳 다크 카드 위 대비 확보
+const POINT_COLOR = '#d4af37'
+const PERIOD_FILL = 'rgba(255, 77, 125, 0.18)' // 반투명 네온 핑크 밴드
 const POINT_SIZE = 6
 
 const todayStr = () => new Date().toLocaleDateString('sv-SE')
