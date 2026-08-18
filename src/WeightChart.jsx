@@ -9,10 +9,15 @@ const PERIOD_FILL = 'rgba(224, 90, 90, 0.14)' // 반투명 붉은 밴드
 const POINT_SIZE = 6
 
 const todayStr = () => new Date().toLocaleDateString('sv-SE')
+const fmtDate = d => `${Number(d.slice(5, 7))}/${Number(d.slice(8, 10))}`
 
 export default function WeightChart({ weights, periods }) {
-  if (!weights || weights.length < 2) {
+  if (!weights || weights.length === 0) {
     return <div className="card">몸무게를 기록하면 그래프가 생겨요 📈</div>
+  }
+  if (weights.length === 1) {
+    const w = weights[0]
+    return <div className="card">{fmtDate(w.date)} {w.kg}kg — 한 번 더 기록하면 그래프가 생겨요 📈</div>
   }
 
   const dates = weights.map(w => w.date)

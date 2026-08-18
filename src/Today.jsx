@@ -10,6 +10,7 @@ import {
 import { calories, volume, stars as calcStars, recentAvgVolume } from './calc'
 import { buildEvent } from './calendarEvent'
 import { connectGoogle, upsertEvent } from './google'
+import { parseWeight } from './validate'
 
 const todayStr = () => new Date().toLocaleDateString('sv-SE')
 const nowHM = () => new Date().toTimeString().slice(0, 5)
@@ -53,6 +54,11 @@ export default function Today() {
   const [saveState, setSaveState] = useState('idle') // idle | saving | saved | calendar_fail
   const [saveMsg, setSaveMsg] = useState('')
 
+  const [todayWeight, setTodayWeight] = useState(null) // 오늘 기록된 kg, 없으면 null
+  const [weightInput, setWeightInput] = useState('')
+  const [weightEditing, setWeightEditing] = useState(false)
+  const [weightMsg, setWeightMsg] = useState('')
+
   useEffect(() => {
     (async () => {
       const custom = await listCustomExercises()
@@ -78,6 +84,8 @@ export default function Today() {
 
       const weights = await listWeights()
       setWeightAvailable(weights.length > 0)
+      const todayEntry = weights.find(w => w.date === today)
+      if (todayEntry) setTodayWeight(todayEntry.kg)
     })()
   }, [])
 
@@ -128,6 +136,26 @@ export default function Today() {
     const next = !inositol
     await setInositol(today, next)
     setInositolState(next)
+  }
+
+  async function handleSaveWeight() {
+    const kg = parseWeight(weightInput)
+    if (kg === null) {
+      setWeightMsg('올바른 값을 입력해주세요')
+      return
+    }
+    await addWeight(today, kg)
+    setTodayWeight(kg)
+    setWeightInput('')
+    setWeightEditing(false)
+    setWeightMsg('')
+    setWeightAvailable(true)
+  }
+
+  function openWeightEdit() {
+    setWeightInput(todayWeight !== null ? String(todayWeight) : '')
+    setWeightMsg('')
+    setWeightEditing(true)
   }
 
   async function handleRestToggle() {
@@ -213,6 +241,26 @@ export default function Today() {
         <button className={`big-btn ${inositol ? 'done' : 'off'}`} onClick={handleInositolToggle}>
           {inositol ? '오늘 먹었어요 ✅' : '아직이에요'}
         </button>
+      </div>
+
+      <div className="card">
+        <div>⚖️ 몸무게</div>
+        {todayWeight !== null && !weightEditing ? (
+          <div className="set-row">
+            <span>오늘 {todayWeight}kg ✅</span>
+            <button className="icon-btn" onClick={openWeightEdit}>수정</button>
+          </div>
+        ) : (
+          <div className="set-row">
+            <input
+              type="number" inputMode="decimal" value={weightInput}
+              onChange={e => setWeightInput(e.target.value)} placeholder="kg"
+            />
+            <span>kg</span>
+            <button onClick={handleSaveWeight}>기록</button>
+          </div>
+        )}
+        {weightMsg && <div className="notice">{weightMsg}</div>}
       </div>
 
       <div className="card">

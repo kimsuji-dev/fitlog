@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getProfile, setProfile, addWeight, listWeights, exportAll } from './db'
 import { connectGoogle, isConnected } from './google'
+import { parseWeight } from './validate'
 
 const todayStr = () => new Date().toLocaleDateString('sv-SE')
 
@@ -38,8 +39,8 @@ export default function Settings({ active } = {}) {
   }
 
   async function saveWeight() {
-    const kg = parseNum(weightKg)
-    if (!Number.isFinite(kg) || kg < 20 || kg > 300) {
+    const kg = parseWeight(weightKg)
+    if (kg === null) {
       setMsg('올바른 값을 입력해주세요')
       return
     }
