@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { BUILTIN, MUSCLES, EQUIPMENT } from '../src/exercises.js'
+import { BUILTIN, MUSCLES, EQUIPMENT, MOTION_PATTERNS } from '../src/exercises.js'
 
 describe('exercises', () => {
   it('약 65종을 포함한다', () => {
@@ -15,6 +15,12 @@ describe('exercises', () => {
       for (const m of ex.muscles) expect(MUSCLES).toContain(m)
       expect(EQUIPMENT).toContain(ex.equipment)
       expect(['weight', 'cardio']).toContain(ex.type)
+    }
+  })
+
+  it('모든 종목은 유효한 pattern을 가진다', () => {
+    for (const ex of BUILTIN) {
+      expect(MOTION_PATTERNS).toContain(ex.pattern)
     }
   })
 
