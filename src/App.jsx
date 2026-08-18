@@ -3,7 +3,6 @@ import Today from './Today'
 import History from './History'
 import Settings from './Settings'
 import NagLine from './NagLine'
-import Family from './Family'
 
 const TABS = [
   { id: 'today', label: '💪 오늘' },
@@ -21,10 +20,6 @@ export default function App() {
       <div style={{ display: tab === 'today' ? undefined : 'none' }}><Today /></div>
       <div style={{ display: tab === 'history' ? undefined : 'none' }}><History active={tab === 'history'} /></div>
       <div style={{ display: tab === 'settings' ? undefined : 'none' }}><Settings active={tab === 'settings'} /></div>
-
-      <div className="family-illustration-wrap">
-        <Family size={72} />
-      </div>
 
       <nav className="tab-nav">
         {TABS.map(t => (

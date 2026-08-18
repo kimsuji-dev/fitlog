@@ -562,21 +562,3 @@ input:focus, textarea:focus, select:focus {
   text-align: center;
 }
 
-/* ── 하단 가족 일러스트 ── */
-.family-illustration-wrap {
-  display: flex;
-  justify-content: center;
-  padding: 16px 0 4px;
-  opacity: 0.85;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .family-illustration {
-    animation: family-float 4s ease-in-out infinite;
-  }
-}
-
-@keyframes family-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
-}
