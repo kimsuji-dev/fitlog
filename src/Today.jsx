@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { BUILTIN, MUSCLES, EQUIPMENT } from './exercises'
 import ExercisePicker from './ExercisePicker'
+import MuscleMap from './MuscleMap'
+import RestTimer from './RestTimer'
 import {
   getProfile, addWeight, listWeights, saveSession, getSession, listSessions,
   setDiet, getDiet, startPeriod, endPeriod, isInPeriod, addCustomExercise, listCustomExercises,
@@ -20,9 +22,16 @@ const DIET_OPTS = [
 
 function emptyEntry(ex) {
   return ex.type === 'weight'
-    ? { name: ex.name, met: ex.met, type: 'weight', sets: [{ reps: 10, kg: 0 }] }
+    ? {
+        name: ex.name, met: ex.met, type: 'weight',
+        muscles: ex.muscles || [], equipment: ex.equipment || '맨몸',
+        sets: [{ reps: 10, kg: 0, done: false }],
+      }
     : { name: ex.name, met: ex.met, type: 'cardio', minutes: 20, km: 0 }
 }
+
+// 종목 하나의 볼륨(Σ reps×kg) — calc.js의 volume()과 같은 계산을 entry 단위로.
+const entryVolume = e => e.sets.reduce((a, s) => a + s.reps * s.kg, 0)
 
 export default function Today() {
   const today = todayStr()
@@ -100,7 +109,7 @@ export default function Today() {
     setEntries(prev => prev.filter((_, idx) => idx !== i))
   }
   function addSet(i) {
-    setEntries(prev => prev.map((e, idx) => idx === i ? { ...e, sets: [...e.sets, { reps: 10, kg: 0 }] } : e))
+    setEntries(prev => prev.map((e, idx) => idx === i ? { ...e, sets: [...e.sets, { reps: 10, kg: 0, done: false }] } : e))
   }
   function updateSet(i, si, patch) {
     setEntries(prev => prev.map((e, idx) =>
@@ -192,20 +201,47 @@ export default function Today() {
           {entries.map((e, i) => (
             <div key={i} className="entry-row">
               <div className="entry-header">
-                <strong>{e.name}</strong>
+                {e.type === 'weight' && <MuscleMap muscles={e.muscles || []} size={40} />}
+                <div className="entry-header-info">
+                  <strong>{e.name}</strong>
+                  {e.type === 'weight' && <span className="text-sm">볼륨 {entryVolume(e)}</span>}
+                </div>
                 <button className="icon-btn" onClick={() => removeEntry(i)}>🗑️</button>
               </div>
               {e.type === 'weight' ? (
                 <>
-                  {e.sets.map((s, si) => (
-                    <div key={si} className="set-row">
-                      <input type="number" value={s.reps} onChange={ev => updateSet(i, si, { reps: Number(ev.target.value) })} placeholder="횟수" />
-                      <span>회 ×</span>
-                      <input type="number" value={s.kg} onChange={ev => updateSet(i, si, { kg: Number(ev.target.value) })} placeholder="무게" />
-                      <span>kg</span>
-                      <button className="icon-btn" onClick={() => removeSet(i, si)}>✕</button>
+                  <div className="set-table">
+                    <div className="set-table-header">
+                      <span>세트</span>
+                      <span>KG</span>
+                      <span>회</span>
+                      <span>완료</span>
+                      <span></span>
                     </div>
-                  ))}
+                    {e.sets.map((s, si) => (
+                      <div key={si} className="set-table-row">
+                        <span className="set-num">{si + 1}</span>
+                        <input
+                          type="number" inputMode="numeric" value={s.kg}
+                          onChange={ev => updateSet(i, si, { kg: Number(ev.target.value) })}
+                          placeholder="무게"
+                        />
+                        <input
+                          type="number" inputMode="numeric" value={s.reps}
+                          onChange={ev => updateSet(i, si, { reps: Number(ev.target.value) })}
+                          placeholder="횟수"
+                        />
+                        <button
+                          className={`set-done-btn ${s.done ? 'done' : ''}`}
+                          onClick={() => updateSet(i, si, { done: !s.done })}
+                          aria-label="세트 완료"
+                        >
+                          {s.done ? '✅' : '⬜'}
+                        </button>
+                        <button className="icon-btn" onClick={() => removeSet(i, si)}>✕</button>
+                      </div>
+                    ))}
+                  </div>
                   <button onClick={() => addSet(i)}>➕ 세트 추가</button>
                 </>
               ) : (
@@ -218,6 +254,8 @@ export default function Today() {
               )}
             </div>
           ))}
+
+          <RestTimer />
 
           {!pickerOpen && !customForm && (
             <button onClick={() => setPickerOpen(true)}>➕ 종목 추가</button>
