@@ -8,6 +8,7 @@ describe('calc', () => {
   it('sessionMinutes', () => {
     expect(sessionMinutes(session())).toBe(60)
     expect(sessionMinutes(session({ start: '18:30', end: '19:10' }))).toBe(40)
+    expect(sessionMinutes(session({ start: '23:50', end: '00:30' }))).toBe(40)
   })
 
   it('calories: 웨이트만 — MET×체중×시간, 균등 분배', () => {

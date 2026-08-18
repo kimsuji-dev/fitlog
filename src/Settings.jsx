@@ -21,17 +21,31 @@ export default function Settings({ active } = {}) {
     })()
   }, [active])
 
+  // 쉼표 소수점('58,5')도 받아주고, 빈 문자열/NaN을 걸러낸다 (Number('')는 0이라 그냥 두면 0이 저장됨)
+  function parseNum(raw) {
+    const n = Number(String(raw).trim().replace(',', '.'))
+    return Number.isFinite(n) ? n : NaN
+  }
+
   async function saveHeight() {
-    if (!heightCm) return
-    await setProfile({ heightCm: Number(heightCm) })
+    const cm = parseNum(heightCm)
+    if (!Number.isFinite(cm) || cm < 100 || cm > 250) {
+      setMsg('올바른 값을 입력해주세요')
+      return
+    }
+    await setProfile({ heightCm: cm })
     setMsg('키 저장했어요 📏')
   }
 
   async function saveWeight() {
-    if (!weightKg) return
+    const kg = parseNum(weightKg)
+    if (!Number.isFinite(kg) || kg < 20 || kg > 300) {
+      setMsg('올바른 값을 입력해주세요')
+      return
+    }
     const today = todayStr()
-    await addWeight(today, Number(weightKg))
-    setLastWeight({ date: today, kg: Number(weightKg) })
+    await addWeight(today, kg)
+    setLastWeight({ date: today, kg })
     setWeightKg('')
     setMsg('오늘 몸무게 기록했어요 ⚖️')
   }

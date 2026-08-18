@@ -1,6 +1,10 @@
 const toMin = hhmm => { const [h, m] = hhmm.split(':').map(Number); return h * 60 + m }
 
-export const sessionMinutes = s => toMin(s.end) - toMin(s.start)
+// 자정을 넘긴 세션(예: 23:50~00:30)은 차이가 음수로 나오므로 하루(1440분)를 더해 보정한다.
+export const sessionMinutes = s => {
+  const diff = toMin(s.end) - toMin(s.start)
+  return diff < 0 ? diff + 1440 : diff
+}
 
 export function calories(s, bodyKg) {
   const total = sessionMinutes(s)

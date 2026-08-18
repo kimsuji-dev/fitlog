@@ -173,8 +173,16 @@ export default function Today() {
   }
 
   async function handleFinish() {
+    if (entries.length === 0) {
+      setSaveState('empty')
+      setSaveMsg('운동 종목을 추가하거나, 쉬는 날이면 😴 버튼을 눌러주세요')
+      return
+    }
     setSaveState('saving')
-    const session = { date: today, start, end: nowHM(), entries, memo, eventId }
+    let end = nowHM()
+    // 자정을 넘긴 세션(예: 23:50 시작)은 저장/캘린더 모두 그날 23:59로 마감한다 (ponytail: 단순 상한, 실제 다음날 종료 시각이 필요해지면 날짜 넘김 지원 추가)
+    if (end < start) end = '23:59'
+    const session = { date: today, start, end, entries, memo, eventId }
     await saveSession(session)
     setStarted(false)
     await uploadToCalendar(session)
@@ -202,7 +210,7 @@ export default function Today() {
 
       <div className="card">
         <div>💊 이노시톨</div>
-        <button className="big-btn" onClick={handleInositolToggle}>
+        <button className={`big-btn ${inositol ? 'done' : 'off'}`} onClick={handleInositolToggle}>
           {inositol ? '오늘 먹었어요 ✅' : '아직이에요'}
         </button>
       </div>
@@ -222,7 +230,7 @@ export default function Today() {
       {!started && (
         <div className="card">
           <div>😴 오늘은 쉬어요</div>
-          <button className="big-btn" onClick={handleRestToggle}>
+          <button className={`big-btn ${resting ? 'done' : 'off'}`} onClick={handleRestToggle}>
             {resting ? '오늘은 쉬는 날 😴' : '😴 오늘은 쉬어요'}
           </button>
         </div>
@@ -263,13 +271,13 @@ export default function Today() {
                       <div key={si} className="set-table-row">
                         <span className="set-num">{si + 1}</span>
                         <input
-                          type="number" inputMode="numeric" value={s.kg}
-                          onChange={ev => updateSet(i, si, { kg: Number(ev.target.value) })}
+                          type="number" inputMode="numeric" min="0" value={s.kg}
+                          onChange={ev => updateSet(i, si, { kg: Math.max(0, Number(ev.target.value)) })}
                           placeholder="무게"
                         />
                         <input
-                          type="number" inputMode="numeric" value={s.reps}
-                          onChange={ev => updateSet(i, si, { reps: Number(ev.target.value) })}
+                          type="number" inputMode="numeric" min="0" value={s.reps}
+                          onChange={ev => updateSet(i, si, { reps: Math.max(0, Number(ev.target.value)) })}
                           placeholder="횟수"
                         />
                         <button
@@ -287,9 +295,9 @@ export default function Today() {
                 </>
               ) : (
                 <div className="set-row">
-                  <input type="number" value={e.minutes} onChange={ev => updateEntry(i, { minutes: Number(ev.target.value) })} placeholder="분" />
+                  <input type="number" min="0" value={e.minutes} onChange={ev => updateEntry(i, { minutes: Math.max(0, Number(ev.target.value)) })} placeholder="분" />
                   <span>분</span>
-                  <input type="number" value={e.km} onChange={ev => updateEntry(i, { km: Number(ev.target.value) })} placeholder="km" />
+                  <input type="number" min="0" value={e.km} onChange={ev => updateEntry(i, { km: Math.max(0, Number(ev.target.value)) })} placeholder="km" />
                   <span>km</span>
                 </div>
               )}
@@ -348,6 +356,7 @@ export default function Today() {
         </button>
       )}
 
+      {saveState === 'empty' && <div className="notice">{saveMsg}</div>}
       {saveState === 'saved' && <div className="notice success">{saveMsg}</div>}
       {saveState === 'calendar_fail' && (
         <div className="notice error">

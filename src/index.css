@@ -117,6 +117,16 @@ input:focus, textarea:focus, select:focus {
   content: none;
 }
 
+/* OFF 상태 토글: 채워진 액션 버튼과 한눈에 구분되도록 muted 배경 */
+.big-btn.off {
+  background: var(--tertiary-color);
+  color: var(--text-muted);
+}
+
+.big-btn.done {
+  background: var(--secondary-color);
+}
+
 .icon-btn {
   background: transparent;
   border: none;
