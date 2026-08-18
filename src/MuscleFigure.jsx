@@ -2,8 +2,8 @@
 // exercises.js 의 한글 부위명을 라이브러리의 근육 슬러그로 매핑해 하이라이트한다.
 import Model from 'react-body-highlighter'
 
-const BODY_COLOR = '#4a3f63'
-const HIGHLIGHT_COLORS = ['#d4af37', '#d4af37']
+const BODY_COLOR = '#dfe6f2'
+const HIGHLIGHT_COLORS = ['#ff7eb6', '#ff7eb6']
 
 // 한글 부위명 → react-body-highlighter 근육 슬러그
 const MUSCLE_MAP = {
@@ -44,7 +44,7 @@ export default function MuscleFigure({ muscles = [], size = 150 }) {
             highlightedColors={HIGHLIGHT_COLORS}
             style={{ width: figureWidth, height: figureHeight }}
           />
-          <div style={{ fontSize: 9, color: '#b7a9c9' }}>{label}</div>
+          <div style={{ fontSize: 9, color: '#7c8aa5' }}>{label}</div>
         </div>
       ))}
     </div>

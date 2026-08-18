@@ -79,7 +79,7 @@ export default function RestTimer() {
     <div className={`card rest-timer ${done ? 'rest-timer-done' : ''}`}>
       <div>⏱️ 휴식 타이머</div>
       <div className="rest-timer-display">
-        {done ? '🔔 땡! 다음 세트 가즈아' : `${remaining} 초`}
+        {done ? '♪ 휴식 끝! 다음 세트 고고씽' : `${remaining} 초`}
       </div>
       <div className="rest-timer-controls">
         <button onClick={() => adjust(-STEP_SEC)} disabled={running}>−</button>

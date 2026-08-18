@@ -74,7 +74,7 @@ export default function History({ active } = {}) {
 
   return (
     <div>
-      <h2>📈 이력</h2>
+      <h2>📔 다이어리</h2>
 
       <WeightChart weights={weights} periods={periods} />
 

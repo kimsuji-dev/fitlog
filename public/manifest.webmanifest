@@ -3,7 +3,7 @@
   "short_name": "fitlog",
   "start_url": "/fitlog/",
   "display": "standalone",
-  "background_color": "#1a1226",
-  "theme_color": "#1a1226",
+  "background_color": "#f4f7fc",
+  "theme_color": "#f4f7fc",
   "icons": [{ "src": "/fitlog/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
 }
