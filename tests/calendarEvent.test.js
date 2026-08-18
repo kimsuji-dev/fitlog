@@ -16,7 +16,11 @@ const base = {
 describe('buildEvent', () => {
   it('제목: 별·칼로리·식단 이모지', () => {
     const e = buildEvent(base)
-    expect(e.summary).toBe('💪 운동 ★★★☆☆ (~420kcal) 🥗')
+    expect(e.summary).toBe('🐰 💪 운동 ★★★☆☆ (~420kcal) 🥗')
+  })
+
+  it('제목은 🐰 프리픽스로 시작', () => {
+    expect(buildEvent(base).summary.startsWith('🐰 ')).toBe(true)
   })
 
   it('생리 기간이면 제목에 🩸, 설명에 보정 문구', () => {
@@ -26,7 +30,7 @@ describe('buildEvent', () => {
   })
 
   it('식단 없으면 이모지 생략', () => {
-    expect(buildEvent({ ...base, diet: null }).summary).toBe('💪 운동 ★★★☆☆ (~420kcal)')
+    expect(buildEvent({ ...base, diet: null }).summary).toBe('🐰 💪 운동 ★★★☆☆ (~420kcal)')
   })
 
   it('설명: 종목별 한 줄 + 메모', () => {
@@ -54,6 +58,6 @@ describe('buildEvent', () => {
 
   it('이모지 순서: 식단 → 이노시톨 → 생리', () => {
     const e = buildEvent({ ...base, diet: 'good', inositol: true, inPeriod: true })
-    expect(e.summary).toBe('💪 운동 ★★★☆☆ (~420kcal) 🥗 💊 🩸')
+    expect(e.summary).toBe('🐰 💪 운동 ★★★☆☆ (~420kcal) 🥗 💊 🩸')
   })
 })

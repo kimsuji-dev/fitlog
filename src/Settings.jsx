@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getProfile, setProfile, addWeight, listWeights, exportAll } from './db'
-import { connectGoogle, isConnected } from './google'
+import { connectGoogle, isConnected, listCalendars } from './google'
 import { parseWeight } from './validate'
 
 const todayStr = () => new Date().toLocaleDateString('sv-SE')
@@ -11,6 +11,9 @@ export default function Settings({ active } = {}) {
   const [lastWeight, setLastWeight] = useState(null) // {date, kg}
   const [connected, setConnected] = useState(isConnected())
   const [msg, setMsg] = useState('')
+  const [calendars, setCalendars] = useState(null) // [{id, summary, primary}] | null
+  const [calendarId, setCalendarId] = useState(localStorage.getItem('fitlog.calendarId') || 'primary')
+  const [calendarMsg, setCalendarMsg] = useState('')
 
   useEffect(() => {
     if (!active) return
@@ -61,6 +64,24 @@ export default function Settings({ active } = {}) {
     }
   }
 
+  async function handleLoadCalendars() {
+    try {
+      const list = await listCalendars()
+      setCalendars(list)
+      setCalendarMsg('')
+    } catch {
+      setCalendars(null)
+      setCalendarMsg('권한이 추가로 필요해요 — 구글 연결을 다시 눌러주세요')
+    }
+  }
+
+  function handleSelectCalendar(id) {
+    setCalendarId(id)
+    localStorage.setItem('fitlog.calendarId', id)
+    const cal = calendars?.find(c => c.id === id)
+    setCalendarMsg(cal ? `이제 '${cal.summary}' 캘린더에 올라가요 ♪` : '')
+  }
+
   async function handleExport() {
     const data = await exportAll()
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
@@ -98,6 +119,26 @@ export default function Settings({ active } = {}) {
         {connected
           ? <div className="notice success">연결됨 ✅</div>
           : <button onClick={handleConnect}>구글 캘린더 연결</button>}
+
+        {connected && (
+          <>
+            <div>캘린더 선택</div>
+            <button onClick={handleLoadCalendars}>📋 캘린더 목록 불러오기</button>
+            {calendars && (
+              <select value={calendarId} onChange={e => handleSelectCalendar(e.target.value)}>
+                {calendars.map(c => (
+                  <option key={c.id} value={c.id}>{c.summary}{c.primary ? ' (기본)' : ''}</option>
+                ))}
+              </select>
+            )}
+            {calendarMsg && (
+              <div className={`notice ${calendars ? 'success' : 'error'}`}>
+                {calendarMsg}
+                {!calendars && <button onClick={handleConnect}>구글 캘린더 연결</button>}
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       <div className="card">

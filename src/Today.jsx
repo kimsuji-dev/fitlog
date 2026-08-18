@@ -162,6 +162,7 @@ export default function Today() {
     const next = !resting
     await setRestDay(today, next)
     setRestingState(next)
+    if (started && entries.length === 0) setStarted(false)
   }
 
   async function handlePeriodToggle() {
@@ -249,7 +250,7 @@ export default function Today() {
         </button>
       )}
 
-      {!started && (
+      {(!started || entries.length === 0) && (
         <div className="card">
           <div>😴 오늘은 쉬어요</div>
           <button className={`big-btn ${resting ? 'done' : 'off'}`} onClick={handleRestToggle}>
