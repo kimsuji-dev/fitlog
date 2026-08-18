@@ -1,5 +1,7 @@
-// 동작 그림 — 66개 종목을 12개 움직임 패턴으로 묶어, 각 패턴을 시작→끝 두 자세로 그린다.
-// 옆모습 스틱피겨(+볼륨)로 단순화: 머리 원 + 몸통/팔/다리 굵은 선.
+// 동작 그림 — free-exercise-db 실사진이 있으면 그걸 쓰고, 없으면(또는 로드 실패 시)
+// 66개 종목을 12개 움직임 패턴으로 묶은 스틱피겨 폴백을 그린다.
+import { useState } from 'react'
+
 const LINE = '#3a3350'
 const ACCENT = '#7c6cf0'
 
@@ -83,7 +85,10 @@ const POSES = {
   },
 }
 
-export default function MotionDiagram({ pattern, size = 90 }) {
+const CDN_BASE = 'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises'
+
+// 스틱피겨 패턴 그림 — 실사진이 없거나 로드에 실패했을 때의 폴백.
+function PatternDiagram({ pattern, size }) {
   const cfg = POSES[pattern] || POSES.core
   const height = size
   const width = size * (140 / 66)
@@ -109,4 +114,33 @@ export default function MotionDiagram({ pattern, size = 90 }) {
       </g>
     </svg>
   )
+}
+
+// 실제 운동 사진 — free-exercise-db(퍼블릭 도메인)의 시작/끝 자세 두 장.
+function PhotoPair({ photos, pattern, size }) {
+  const [broken, setBroken] = useState(false)
+
+  if (broken) return <PatternDiagram pattern={pattern} size={size} />
+
+  return (
+    <div className="motion-photo-pair">
+      {['0', '1'].map((n, i) => (
+        <figure className="motion-photo" key={n}>
+          <img
+            src={`${CDN_BASE}/${photos}/${n}.jpg`}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            onError={() => setBroken(true)}
+          />
+          <figcaption className="text-sm">{i === 0 ? '시작' : '끝'}</figcaption>
+        </figure>
+      ))}
+    </div>
+  )
+}
+
+export default function MotionDiagram({ pattern, photos, size = 90 }) {
+  if (photos) return <PhotoPair photos={photos} pattern={pattern} size={size} />
+  return <PatternDiagram pattern={pattern} size={size} />
 }

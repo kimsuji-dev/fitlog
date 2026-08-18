@@ -104,6 +104,8 @@ export default function Settings({ active } = {}) {
           CDC: Folic Acid — About / Clinical overview (400 mcg daily, start ≥1 month before conception)
           <br />
           Fertility & Sterility (2022): Preconception weight reduction in women and men with obesity and infertility
+          <br />
+          운동 사진: free-exercise-db (퍼블릭 도메인)
         </div>
         <div className="text-sm">이 앱의 건강 문구는 일반적인 정보이며, 진료를 대신하지 않아요.</div>
       </div>

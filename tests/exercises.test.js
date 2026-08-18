@@ -28,4 +28,10 @@ describe('exercises', () => {
     const names = BUILTIN.map(e => e.name)
     expect(new Set(names).size).toBe(names.length)
   })
+
+  it('모든 종목의 photos는 null이거나 비어있지 않은 문자열이다', () => {
+    for (const ex of BUILTIN) {
+      expect(ex.photos === null || (typeof ex.photos === 'string' && ex.photos.length > 0)).toBe(true)
+    }
+  })
 })
