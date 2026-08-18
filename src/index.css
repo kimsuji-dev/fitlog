@@ -19,6 +19,12 @@
   box-sizing: border-box;
 }
 
+html, body {
+  /* 가로 스크롤 방지: 칩 줄 같은 내부 스크롤 영역이 페이지를 넓히지 못하게 */
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard', 'Noto Sans KR', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -296,9 +302,11 @@ input:focus, textarea:focus, select:focus {
 
 .app-shell {
   max-width: 480px;
+  width: 100%;
   margin: 0 auto;
   padding: 12px;
   padding-bottom: 88px;
+  overflow-x: hidden;
 }
 
 .tab-nav {
@@ -366,6 +374,8 @@ input:focus, textarea:focus, select:focus {
 /* ── 운동 종목 선택기 (ExercisePicker) ── */
 .exercise-picker {
   padding: 16px;
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 .picker-search {
@@ -383,6 +393,10 @@ input:focus, textarea:focus, select:focus {
   overflow-x: auto;
   padding-bottom: 4px;
   scrollbar-width: none;
+  /* min-width:0 이 없으면 flex 아이템이 콘텐츠 폭만큼 벌어져 카드를 밀어낸다 */
+  min-width: 0;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
 }
 
 .chip-row-scroll::-webkit-scrollbar {
@@ -424,6 +438,7 @@ input:focus, textarea:focus, select:focus {
 
 .picker-row-main {
   flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   background: transparent;
