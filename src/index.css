@@ -19,10 +19,6 @@
   box-sizing: border-box;
 }
 
-.pixel-type {
-  font-family: 'NeoDunggeunmo', -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard', 'Noto Sans KR', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -305,56 +301,6 @@ input:focus, textarea:focus, select:focus {
   padding-bottom: 88px;
 }
 
-.critter-strip {
-  height: 70px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-evenly;
-  padding: 0 12px;
-  margin-top: 8px;
-  pointer-events: none;
-}
-
-.critter-sprite {
-  image-rendering: pixelated;
-  animation: critter-bob 1.2s steps(2) infinite;
-}
-
-@keyframes critter-bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .critter-sprite {
-    animation: none;
-  }
-}
-
-.sky-angel {
-  position: fixed;
-  top: 6px;
-  right: 10px;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.angel-sprite {
-  image-rendering: pixelated;
-  animation: angel-drift 6s ease-in-out infinite;
-}
-
-@keyframes angel-drift {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(-14px, -6px); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .angel-sprite {
-    animation: none;
-  }
-}
-
 .tab-nav {
   position: fixed;
   bottom: 0;
@@ -473,17 +419,16 @@ input:focus, textarea:focus, select:focus {
   gap: 8px;
   background: var(--tertiary-color);
   border-radius: 12px;
-  padding: 6px 8px;
+  padding: 4px 8px;
 }
 
 .picker-row-main {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 10px;
   background: transparent;
   border: none;
-  padding: 4px;
+  padding: 8px 4px;
   text-align: left;
 }
 
@@ -494,7 +439,30 @@ input:focus, textarea:focus, select:focus {
 .picker-row-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.picker-row-name {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.picker-row-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.equipment-chip {
+  flex: none;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background: var(--panel-color);
+  border-radius: 999px;
+  padding: 2px 8px;
 }
 
 .heart-btn {
@@ -504,13 +472,4 @@ input:focus, textarea:focus, select:focus {
 
 .heart-btn.active {
   color: var(--accent-color);
-}
-
-.muscle-map {
-  display: flex;
-  flex: none;
-}
-
-.muscle-map svg {
-  image-rendering: pixelated;
 }

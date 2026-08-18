@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
 import { MUSCLES, EQUIPMENT } from './exercises'
-import MuscleMap from './MuscleMap'
 import { listSessions, listFavorites, toggleFavorite } from './db'
 
 const TABS = [
@@ -105,10 +104,12 @@ export default function ExercisePicker({ exercises, onSelect, onAddCustom, onClo
         {list.map(ex => (
           <div key={ex.name} className="picker-row">
             <button className="picker-row-main" onClick={() => onSelect(ex)}>
-              <MuscleMap muscles={ex.muscles || []} size={54} />
               <div className="picker-row-info">
-                <strong>{ex.name}</strong>
-                <span className="text-sm">{(ex.muscles || []).join(' · ') || '부위 미지정'}</span>
+                <span className="picker-row-name">{ex.name}</span>
+                <span className="picker-row-meta">
+                  <span className="text-sm">{(ex.muscles || []).join(' · ') || '부위 미지정'}</span>
+                  <span className="equipment-chip">{ex.equipment || '맨몸'}</span>
+                </span>
               </div>
             </button>
             <button

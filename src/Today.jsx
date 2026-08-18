@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BUILTIN, MUSCLES, EQUIPMENT } from './exercises'
 import ExercisePicker from './ExercisePicker'
-import MuscleMap from './MuscleMap'
 import RestTimer from './RestTimer'
 import {
   getProfile, addWeight, listWeights, saveSession, getSession, listSessions,
@@ -201,10 +200,14 @@ export default function Today() {
           {entries.map((e, i) => (
             <div key={i} className="entry-row">
               <div className="entry-header">
-                {e.type === 'weight' && <MuscleMap muscles={e.muscles || []} size={76} />}
                 <div className="entry-header-info">
                   <strong>{e.name}</strong>
-                  {e.type === 'weight' && <span className="text-sm">볼륨 {entryVolume(e)}</span>}
+                  {e.type === 'weight' && (
+                    <span className="text-sm">
+                      볼륨 {entryVolume(e)}
+                      {(e.muscles || []).length > 0 && ` · ${e.muscles.join(' · ')}`}
+                    </span>
+                  )}
                 </div>
                 <button className="icon-btn" onClick={() => removeEntry(i)}>🗑️</button>
               </div>
