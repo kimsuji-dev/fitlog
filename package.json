@@ -11,15 +11,16 @@
     "deploy": "vite build && gh-pages -d dist"
   },
   "dependencies": {
+    "idb": "^8.0.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "idb": "^8.0.0"
+    "react-body-highlighter": "^2.0.5",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
-    "vite": "^5.0.8",
-    "vitest": "^1.2.2",
     "fake-indexeddb": "^6.0.0",
-    "gh-pages": "^6.1.1"
+    "gh-pages": "^6.1.1",
+    "vite": "^5.0.8",
+    "vitest": "^1.2.2"
   }
 }
