@@ -184,7 +184,7 @@ export default function Today() {
       await saveSession({ ...session, eventId: newEventId })
       setEventId(newEventId)
       setSaveState('saved')
-      setSaveMsg('캘린더에 올라갔어요 ✅')
+      setSaveMsg('💰 JACKPOT! 캘린더에 올라갔어요 🎉')
     } catch (err) {
       setSaveState('calendar_fail')
       setSaveMsg('캘린더 업로드 실패 — ' + err.message)
@@ -239,13 +239,13 @@ export default function Today() {
       <div className="card">
         <div>💊 이노시톨</div>
         <button className={`big-btn ${inositol ? 'done' : 'off'}`} onClick={handleInositolToggle}>
-          {inositol ? '오늘 먹었어요 ✅' : '아직이에요'}
+          {inositol ? '오늘 먹었어요 ✅ 베팅 완료' : '아직이에요'}
         </button>
       </div>
 
       {!started && (
         <button className="big-btn" onClick={() => { setStart(nowHM()); setStarted(true) }}>
-          🏋️ 운동 시작
+          🎲 오늘의 판 시작 (운동)
         </button>
       )}
 
@@ -253,7 +253,7 @@ export default function Today() {
         <div className="card">
           <div>😴 오늘은 쉬어요</div>
           <button className={`big-btn ${resting ? 'done' : 'off'}`} onClick={handleRestToggle}>
-            {resting ? '오늘은 쉬는 날 😴' : '😴 오늘은 쉬어요'}
+            {resting ? '오늘은 쉬는 날 😴 (하우스 휴장)' : '😴 오늘은 쉬어요'}
           </button>
         </div>
       )}
@@ -379,7 +379,11 @@ export default function Today() {
       )}
 
       {saveState === 'empty' && <div className="notice">{saveMsg}</div>}
-      {saveState === 'saved' && <div className="notice success">{saveMsg}</div>}
+      {saveState === 'saved' && (
+        <div className="notice success">
+          <span className="coin-emoji">💰</span> {saveMsg.replace('💰 ', '')}
+        </div>
+      )}
       {saveState === 'calendar_fail' && (
         <div className="notice error">
           {saveMsg}

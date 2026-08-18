@@ -113,7 +113,10 @@ export default function NagLine({ trigger }) {
   if (!line) return null
 
   return (
-    <div className={`nag-line${line.info ? ' info' : ''}`}>{line.prefix} {line.text}</div>
+    <div className={`nag-line${line.info ? ' info' : ''}`}>
+      <div className="nag-line-header">🎩 오늘의 딜러 멘트</div>
+      <div className="nag-line-body">{line.prefix} {line.text}</div>
+    </div>
   )
 }
 

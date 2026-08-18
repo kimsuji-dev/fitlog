@@ -60,6 +60,17 @@ h2::after {
   content: none;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  h2 {
+    animation: marquee-blink 1.2s steps(1) infinite;
+  }
+}
+
+@keyframes marquee-blink {
+  0%, 49% { border-bottom-color: rgba(212, 175, 55, 0.85); }
+  50%, 100% { border-bottom-color: rgba(212, 175, 55, 0.2); }
+}
+
 button {
   font-family: inherit;
   font-size: 1rem;
@@ -124,6 +135,17 @@ input:focus, textarea:focus, select:focus {
   border-radius: 12px;
   margin-bottom: 12px;
   box-shadow: var(--glow);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .big-btn:not(.off):not(.done) {
+    animation: glow-pulse 3s ease-in-out infinite;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(212, 175, 55, 0.35); }
+  50% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.55); }
 }
 
 .big-btn::after {
@@ -309,6 +331,36 @@ input:focus, textarea:focus, select:focus {
 .diet-row button.selected {
   background: var(--primary-color-soft);
   box-shadow: inset 0 0 0 2px var(--primary-color), inset 0 2px 5px rgba(0, 0, 0, .5);
+  position: relative;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .diet-row button.selected {
+    animation: slot-lock 0.4s ease-out 1;
+  }
+}
+
+@keyframes slot-lock {
+  0% { transform: scale(1) rotate(0deg); }
+  35% { transform: scale(1.25) rotate(-12deg); }
+  65% { transform: scale(0.95) rotate(8deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.diet-row button.selected::after {
+  content: 'WIN';
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #1a1226;
+  background: var(--primary-color);
+  border-radius: 6px;
+  padding: 1px 4px;
+  line-height: 1.3;
+  box-shadow: 0 0 4px rgba(212, 175, 55, 0.7);
 }
 
 .notice {
@@ -323,6 +375,30 @@ input:focus, textarea:focus, select:focus {
 .notice.success {
   background: #12352a;
   color: #3ce6a8;
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .notice.success {
+    animation: gold-shimmer 3s ease-in-out infinite;
+  }
+
+  .notice.success .coin-emoji {
+    display: inline-block;
+    animation: coin-bounce 1s ease-in-out infinite;
+  }
+}
+
+@keyframes gold-shimmer {
+  0%, 100% { border-color: rgba(212, 175, 55, 0.35); }
+  50% { border-color: rgba(212, 175, 55, 0.85); }
+}
+
+@keyframes coin-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
 }
 
 .notice.error {
@@ -396,6 +472,14 @@ input:focus, textarea:focus, select:focus {
 
 .nag-line.info {
   background: #16332f;
+}
+
+.nag-line-header {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  opacity: 0.75;
+  margin-bottom: 2px;
 }
 
 .toggle-btn {

@@ -6,7 +6,7 @@ import NagLine from './NagLine'
 
 const TABS = [
   { id: 'today', label: '💪 오늘' },
-  { id: 'history', label: '📈 이력' },
+  { id: 'history', label: '💰 전적' },
   { id: 'settings', label: '⚙️ 설정' },
 ]
 
