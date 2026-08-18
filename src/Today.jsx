@@ -184,10 +184,48 @@ export default function Today() {
     <div className="today-screen">
       <h2>💪 오늘 기록</h2>
 
+      <div className="card">
+        <div>식단</div>
+        <div className="diet-row">
+          {DIET_OPTS.map(o => (
+            <button
+              key={o.rating}
+              onClick={() => handleDiet(o.rating)}
+              className={diet === o.rating ? 'selected' : ''}
+              title={o.label}
+            >
+              {o.emoji}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="card">
+        <div>💊 이노시톨</div>
+        <button className="big-btn" onClick={handleInositolToggle}>
+          {inositol ? '오늘 먹었어요 ✅' : '아직이에요'}
+        </button>
+      </div>
+
+      <div className="card">
+        <button onClick={handlePeriodToggle}>
+          {inPeriod ? '생리 끝! ✅' : '생리터졋슴 🩸'}
+        </button>
+      </div>
+
       {!started && (
         <button className="big-btn" onClick={() => { setStart(nowHM()); setStarted(true) }}>
           🏋️ 운동 시작
         </button>
+      )}
+
+      {!started && (
+        <div className="card">
+          <div>😴 오늘은 쉬어요</div>
+          <button className="big-btn" onClick={handleRestToggle}>
+            {resting ? '오늘은 쉬는 날 😴' : '😴 오늘은 쉬어요'}
+          </button>
+        </div>
       )}
 
       {started && (
@@ -299,42 +337,6 @@ export default function Today() {
           </label>
         </div>
       )}
-
-      <div className="card">
-        <div>식단</div>
-        <div className="diet-row">
-          {DIET_OPTS.map(o => (
-            <button
-              key={o.rating}
-              onClick={() => handleDiet(o.rating)}
-              className={diet === o.rating ? 'selected' : ''}
-              title={o.label}
-            >
-              {o.emoji}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="card">
-        <div>💊 이노시톨</div>
-        <button className="big-btn" onClick={handleInositolToggle}>
-          {inositol ? '오늘 먹었어요 ✅' : '아직이에요'}
-        </button>
-      </div>
-
-      <div className="card">
-        <div>😴 오늘은 쉬어요</div>
-        <button className="big-btn" onClick={handleRestToggle}>
-          {resting ? '오늘은 쉬는 날 😴' : '😴 오늘은 쉬어요'}
-        </button>
-      </div>
-
-      <div className="card">
-        <button onClick={handlePeriodToggle}>
-          {inPeriod ? '생리 끝! ✅' : '생리터졋슴 🩸'}
-        </button>
-      </div>
 
       {!weightAvailable && (
         <div className="notice">⚖️ 설정에서 몸무게를 입력하세요 (기본 60kg로 계산)</div>
