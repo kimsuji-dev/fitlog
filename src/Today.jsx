@@ -244,26 +244,6 @@ export default function Today() {
       </div>
 
       <div className="card">
-        <div>⚖️ 몸무게</div>
-        {todayWeight !== null && !weightEditing ? (
-          <div className="set-row">
-            <span>오늘 {todayWeight}kg ✅</span>
-            <button className="icon-btn" onClick={openWeightEdit}>수정</button>
-          </div>
-        ) : (
-          <div className="set-row">
-            <input
-              type="text" inputMode="decimal" value={weightInput}
-              onChange={e => setWeightInput(e.target.value)} placeholder="kg"
-            />
-            <span>kg</span>
-            <button onClick={handleSaveWeight}>기록</button>
-          </div>
-        )}
-        {weightMsg && <div className="notice">{weightMsg}</div>}
-      </div>
-
-      <div className="card">
         <button onClick={handlePeriodToggle}>
           {inPeriod ? '생리 끝! ✅' : '생리터졋슴 🩸'}
         </button>
@@ -412,6 +392,26 @@ export default function Today() {
           <button onClick={handleRetry}>🔄 다시 시도</button>
         </div>
       )}
+
+      <div className="card">
+        <div>⚖️ 몸무게 <span className="text-sm">(2주에 한 번이면 충분해요)</span></div>
+        {todayWeight !== null && !weightEditing ? (
+          <div className="set-row">
+            <span>오늘 {todayWeight}kg ✅</span>
+            <button className="icon-btn" onClick={openWeightEdit}>수정</button>
+          </div>
+        ) : (
+          <div className="set-row">
+            <input
+              type="text" inputMode="decimal" value={weightInput}
+              onChange={e => setWeightInput(e.target.value)} placeholder="kg"
+            />
+            <span>kg</span>
+            <button onClick={handleSaveWeight}>기록</button>
+          </div>
+        )}
+        {weightMsg && <div className="notice">{weightMsg}</div>}
+      </div>
     </div>
   )
 }
