@@ -243,12 +243,6 @@ export default function Today() {
         </button>
       </div>
 
-      <div className="card">
-        <button onClick={handlePeriodToggle}>
-          {inPeriod ? '생리 끝! ✅' : '생리터졋슴 🩸'}
-        </button>
-      </div>
-
       {!started && (
         <button className="big-btn" onClick={() => { setStart(nowHM()); setStarted(true) }}>
           🏋️ 운동 시작
@@ -392,6 +386,12 @@ export default function Today() {
           <button onClick={handleRetry}>🔄 다시 시도</button>
         </div>
       )}
+
+      <div className="card">
+        <button onClick={handlePeriodToggle}>
+          {inPeriod ? '생리 끝! ✅' : '생리터졋슴 🩸'}
+        </button>
+      </div>
 
       <div className="card">
         <div>⚖️ 몸무게 <span className="text-sm">(2주에 한 번이면 충분해요)</span></div>

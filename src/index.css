@@ -273,6 +273,7 @@ input:focus, textarea:focus, select:focus {
 .diet-row {
   display: flex;
   gap: 10px;
+  justify-content: center;
 }
 
 .diet-row button {
