@@ -15,6 +15,17 @@ describe('db', () => {
     expect(w.map(x => x.date)).toEqual(['2026-08-01', '2026-08-15'])
   })
 
+  it('사이즈(가슴/허리/엉덩이)는 선택 입력이고, 다시 몸무게만 저장해도 기존 사이즈가 유지된다', async () => {
+    await db.addWeight('2026-08-20', 58, { chest: 90, waist: 70 })
+    let w = (await db.listWeights()).find(x => x.date === '2026-08-20')
+    expect(w).toMatchObject({ kg: 58, chest: 90, waist: 70 })
+    expect(w.hip).toBeUndefined()
+
+    await db.addWeight('2026-08-20', 58.5) // 사이즈 없이 재저장 — 기존 사이즈 안 지워져야 함
+    w = (await db.listWeights()).find(x => x.date === '2026-08-20')
+    expect(w).toMatchObject({ kg: 58.5, chest: 90, waist: 70 })
+  })
+
   it('세션 저장/조회, 목록은 최신순', async () => {
     await db.saveSession({ date: '2026-08-10', start: '18:00', end: '19:00', entries: [], memo: '', eventId: null })
     await db.saveSession({ date: '2026-08-17', start: '18:00', end: '19:00', entries: [], memo: '', eventId: null })

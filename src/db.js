@@ -27,7 +27,17 @@ const dbp = isTelegram() ? Promise.resolve(cloudDB) : openDB('fitlog', 4, {
 export const getProfile = async () => (await dbp).get('profile', 'me')
 export const setProfile = async p => (await dbp).put('profile', p, 'me')
 
-export const addWeight = async (date, kg) => (await dbp).put('weights', { date, kg })
+// chest/waist/hip(cm)은 선택 입력 — 안 넘기면 그 날짜의 기존 값을 유지(다른 화면에서 몸무게만 다시 저장해도 사이즈가 지워지지 않게).
+export const addWeight = async (date, kg, sizes = {}) => {
+  const d = await dbp
+  const prev = await d.get('weights', date)
+  return d.put('weights', {
+    date, kg,
+    chest: sizes.chest ?? prev?.chest,
+    waist: sizes.waist ?? prev?.waist,
+    hip: sizes.hip ?? prev?.hip,
+  })
+}
 export const listWeights = async () => (await dbp).getAll('weights') // keyPath=date라 오름차순
 
 export const saveSession = async s => (await dbp).put('sessions', s)

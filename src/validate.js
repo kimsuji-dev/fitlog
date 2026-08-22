@@ -15,3 +15,11 @@ export function parseWeight(raw) {
   if (!Number.isFinite(n) || n < 20 || n > 300) return null
   return n
 }
+
+// 가슴/허리/엉덩이 둘레(cm) — 쉼표 소수점 허용, 20~200cm 범위를 벗어나거나 숫자가 아니면 null.
+// 선택 입력이라 빈 문자열 처리는 호출부에서(빈 값이면 이 함수를 안 부르고 그냥 생략).
+export function parseSize(raw) {
+  const n = Number(String(raw).trim().replace(',', '.'))
+  if (!Number.isFinite(n) || n < 20 || n > 200) return null
+  return n
+}

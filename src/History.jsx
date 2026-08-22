@@ -60,6 +60,9 @@ export default function History({ active } = {}) {
 
   const inPeriod = date => periods.some(p => p.start <= date && (p.end === null || date <= p.end))
 
+  // 사이즈(가슴/허리/엉덩이) 기록이 있는 날짜만, 최신순
+  const sizeRecords = weights.filter(w => w.chest || w.waist || w.hip).slice().reverse()
+
   // 종목별 최근 기록: 최신 세션부터 훑어 종목당 처음(=가장 최근) 등장만 채택
   const recentByExercise = []
   const claimed = new Set()
@@ -77,6 +80,21 @@ export default function History({ active } = {}) {
       <h2>📔 다이어리</h2>
 
       <WeightChart weights={weights} periods={periods} />
+
+      {sizeRecords.length > 0 && (
+        <div className="card">
+          <div>📏 사이즈 기록</div>
+          {sizeRecords.map(w => (
+            <div key={w.date} className="text-sm">
+              {fmtDate(w.date)} — {[
+                w.chest && `가슴 ${w.chest}cm`,
+                w.waist && `허리 ${w.waist}cm`,
+                w.hip && `엉덩이 ${w.hip}cm`,
+              ].filter(Boolean).join(' · ')}
+            </div>
+          ))}
+        </div>
+      )}
 
       {recentByExercise.length > 0 && (
         <div className="card">

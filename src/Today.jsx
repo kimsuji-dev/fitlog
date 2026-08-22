@@ -10,7 +10,7 @@ import {
 import { calories, volume, stars as calcStars, recentAvgVolume } from './calc'
 import { buildEvent } from './calendarEvent'
 import { connectGoogle, upsertEvent } from './google'
-import { parseWeight, parseDeepLink } from './validate'
+import { parseWeight, parseSize, parseDeepLink } from './validate'
 
 const todayStr = () => new Date().toLocaleDateString('sv-SE')
 const nowHM = () => new Date().toTimeString().slice(0, 5)
@@ -60,6 +60,11 @@ export default function Today() {
   const [weightEditing, setWeightEditing] = useState(false)
   const [weightMsg, setWeightMsg] = useState('')
 
+  const [todaySizes, setTodaySizes] = useState({}) // 오늘 기록된 {chest,waist,hip}(cm), 없으면 undefined
+  const [chestInput, setChestInput] = useState('')
+  const [waistInput, setWaistInput] = useState('')
+  const [hipInput, setHipInput] = useState('')
+
   useEffect(() => {
     (async () => {
       const custom = await listCustomExercises()
@@ -86,7 +91,10 @@ export default function Today() {
       const weights = await listWeights()
       setWeightAvailable(weights.length > 0)
       const todayEntry = weights.find(w => w.date === today)
-      if (todayEntry) setTodayWeight(todayEntry.kg)
+      if (todayEntry) {
+        setTodayWeight(todayEntry.kg)
+        setTodaySizes({ chest: todayEntry.chest, waist: todayEntry.waist, hip: todayEntry.hip })
+      }
 
       // 텔레그램 딥링크(?muscle=가슴 / ?add=1) — 바로 종목 추가 화면을 연다
       const link = parseDeepLink(location.search)
@@ -165,9 +173,23 @@ export default function Today() {
       setWeightMsg('올바른 값을 입력해주세요')
       return
     }
-    await addWeight(today, kg)
+    const sizes = {}
+    for (const [key, raw] of [['chest', chestInput], ['waist', waistInput], ['hip', hipInput]]) {
+      if (!raw.trim()) continue
+      const v = parseSize(raw)
+      if (v === null) {
+        setWeightMsg('사이즈 값을 확인해주세요')
+        return
+      }
+      sizes[key] = v
+    }
+    await addWeight(today, kg, sizes)
     setTodayWeight(kg)
+    setTodaySizes({ chest: sizes.chest ?? todaySizes.chest, waist: sizes.waist ?? todaySizes.waist, hip: sizes.hip ?? todaySizes.hip })
     setWeightInput('')
+    setChestInput('')
+    setWaistInput('')
+    setHipInput('')
     setWeightEditing(false)
     setWeightMsg('')
     setWeightAvailable(true)
@@ -175,6 +197,9 @@ export default function Today() {
 
   function openWeightEdit() {
     setWeightInput(todayWeight !== null ? String(todayWeight) : '')
+    setChestInput(todaySizes.chest !== undefined ? String(todaySizes.chest) : '')
+    setWaistInput(todaySizes.waist !== undefined ? String(todaySizes.waist) : '')
+    setHipInput(todaySizes.hip !== undefined ? String(todaySizes.hip) : '')
     setWeightMsg('')
     setWeightEditing(true)
   }
@@ -421,19 +446,53 @@ export default function Today() {
       <div className="card">
         <div>⚖️ 몸무게 <span className="text-sm">(2주에 한 번이면 충분해요)</span></div>
         {todayWeight !== null && !weightEditing ? (
-          <div className="set-row">
-            <span>오늘 {todayWeight}kg ✅</span>
-            <button className="icon-btn" onClick={openWeightEdit}>수정</button>
-          </div>
+          <>
+            <div className="set-row">
+              <span>오늘 {todayWeight}kg ✅</span>
+              <button className="icon-btn" onClick={openWeightEdit}>수정</button>
+            </div>
+            {(todaySizes.chest || todaySizes.waist || todaySizes.hip) && (
+              <div className="text-sm">
+                {[
+                  todaySizes.chest && `가슴 ${todaySizes.chest}cm`,
+                  todaySizes.waist && `허리 ${todaySizes.waist}cm`,
+                  todaySizes.hip && `엉덩이 ${todaySizes.hip}cm`,
+                ].filter(Boolean).join(' · ')}
+              </div>
+            )}
+          </>
         ) : (
-          <div className="set-row">
-            <input
-              type="text" inputMode="decimal" value={weightInput}
-              onChange={e => setWeightInput(e.target.value)} placeholder="kg"
-            />
-            <span>kg</span>
-            <button onClick={handleSaveWeight}>기록</button>
-          </div>
+          <>
+            <div className="set-row">
+              <input
+                type="text" inputMode="decimal" value={weightInput}
+                onChange={e => setWeightInput(e.target.value)} placeholder="kg"
+              />
+              <span>kg</span>
+              <button onClick={handleSaveWeight}>기록</button>
+            </div>
+            <div className="set-row">
+              <input
+                type="text" inputMode="decimal" value={chestInput}
+                onChange={e => setChestInput(e.target.value)} placeholder="가슴(선택)"
+              />
+              <span>cm</span>
+            </div>
+            <div className="set-row">
+              <input
+                type="text" inputMode="decimal" value={waistInput}
+                onChange={e => setWaistInput(e.target.value)} placeholder="허리(선택)"
+              />
+              <span>cm</span>
+            </div>
+            <div className="set-row">
+              <input
+                type="text" inputMode="decimal" value={hipInput}
+                onChange={e => setHipInput(e.target.value)} placeholder="엉덩이(선택)"
+              />
+              <span>cm</span>
+            </div>
+          </>
         )}
         {weightMsg && <div className="notice">{weightMsg}</div>}
       </div>
