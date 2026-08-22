@@ -12,7 +12,7 @@ for line in open(os.path.expanduser("~/.config/aegis/telegram.env")):
 token, chat = cfg.get("TG_FIT_TOKEN", ""), cfg.get("TG_FIT_CHAT_ID", "")
 if not token or not chat:
     raise SystemExit(1)
-text = ("📏 MEASUREMENT DAY girl!! 🗓️✨ 2주 지났어~ 체중 + 가슴/허리/엉덩이 재고 기록하자 📐🍑\n"
+text = ("📏 MEASUREMENT DAY girl!! Chloe here 💅 🗓️✨ 2주 지났어~ 체중 + 허리/엉덩이/허벅지/팔뚝 재고 기록하자 📐🍑 재는 법은 앱에 있어 👀\n"
         "Progress is progress 📈 numbers don't lie honey 💅 Tap below 👇")
 markup = json.dumps({"inline_keyboard": [[{"text": "📏 측정 기록하기", "web_app": {"url": "https://kimsuji-dev.github.io/fitlog/?tab=measure"}}]]})
 urllib.request.urlopen(f"https://api.telegram.org/bot{token}/sendMessage",

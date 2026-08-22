@@ -455,6 +455,51 @@ textarea {
   padding: 12px 14px;
 }
 
+.measure-grid.two {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.ratio-row {
+  margin-top: 6px;
+  padding-top: 6px;
+  box-shadow: 0 -1px 0 rgba(255, 255, 255, .08);
+}
+
+/* 재는 법 — 유리 카드 안의 접이식 텍스트 (유리 아님) */
+.tips summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: .85rem;
+  letter-spacing: .02em;
+  color: var(--text-2);
+}
+
+.tips summary::-webkit-details-marker {
+  display: none;
+}
+
+.tips ul {
+  margin: 0;
+  padding: 0 0 4px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: .85rem;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+
+.tips b {
+  display: inline-block;
+  min-width: 3.2em;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
 .settings-summary {
   cursor: pointer;
   list-style: none;
