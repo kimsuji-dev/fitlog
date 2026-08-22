@@ -3,16 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#f4f7fc" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0a0c" />
   <link rel="manifest" href="/fitlog/manifest.webmanifest" />
   <link rel="icon" href="/fitlog/icon.svg" />
-  <title>♡ 미니헬스 ♡</title>
+  <link rel="stylesheet" href="/fitlog/glass-core.css" />
+  <title>미니헬스</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://accounts.google.com/gsi/client" async></script>
-  <script type="module" crossorigin src="/fitlog/assets/index-CdqmuiMI.js"></script>
-  <link rel="stylesheet" crossorigin href="/fitlog/assets/index-DgI-Iya6.css">
+  <script type="module" crossorigin src="/fitlog/assets/index-WEQvlrHS.js"></script>
+  <link rel="stylesheet" crossorigin href="/fitlog/assets/index-IWO-Hven.css">
 </head>
 <body>
   <div id="root"></div>
+  <!-- 렌즈(굴절)는 .lg-heavy 에만 — 모바일 웹뷰라 화면당 렌즈 1~2개로 제한. 나머지 유리는 CSS 블러만. -->
+  <script>window.LIQUID_GLASS_SEL = { target: '.lg-heavy', overlay: '.lg-none' }</script>
+  <script src="/fitlog/liquid.js"></script>
 </body>
 </html>
