@@ -10,7 +10,7 @@ import {
 import { calories, volume, stars as calcStars, recentAvgVolume } from './calc'
 import { buildEvent } from './calendarEvent'
 import { connectGoogle, upsertEvent } from './google'
-import { parseWeight } from './validate'
+import { parseWeight, parseDeepLink } from './validate'
 
 const todayStr = () => new Date().toLocaleDateString('sv-SE')
 const nowHM = () => new Date().toTimeString().slice(0, 5)
@@ -43,6 +43,7 @@ export default function Today() {
 
   const [exerciseList, setExerciseList] = useState(BUILTIN)
   const [pickerOpen, setPickerOpen] = useState(false)
+  const [pickerMuscle, setPickerMuscle] = useState('전체')
   const [customForm, setCustomForm] = useState(null) // {name, met, type, muscle, equipment}
 
   const [diet, setDietState] = useState(null)
@@ -86,6 +87,15 @@ export default function Today() {
       setWeightAvailable(weights.length > 0)
       const todayEntry = weights.find(w => w.date === today)
       if (todayEntry) setTodayWeight(todayEntry.kg)
+
+      // 텔레그램 딥링크(?muscle=가슴 / ?add=1) — 바로 종목 추가 화면을 연다
+      const link = parseDeepLink(location.search)
+      if (link) {
+        history.replaceState(null, '', location.pathname)
+        setStarted(true)
+        setPickerMuscle(link.muscle)
+        setPickerOpen(true)
+      }
     })()
   }, [])
 
@@ -330,12 +340,13 @@ export default function Today() {
           <RestTimer />
 
           {!pickerOpen && !customForm && (
-            <button onClick={() => setPickerOpen(true)}>➕ 종목 추가</button>
+            <button onClick={() => { setPickerMuscle('전체'); setPickerOpen(true) }}>➕ 종목 추가</button>
           )}
 
           {pickerOpen && (
             <ExercisePicker
               exercises={exerciseList}
+              initialMuscle={pickerMuscle}
               onSelect={addExercise}
               onAddCustom={() => { setPickerOpen(false); setCustomForm({ name: '', met: '', type: 'weight', muscle: '', equipment: '맨몸' }) }}
               onClose={() => setPickerOpen(false)}

@@ -83,10 +83,10 @@ function useUsageStats() {
   return { counts, recentOrder }
 }
 
-export default function ExercisePicker({ exercises, onSelect, onAddCustom, onClose }) {
+export default function ExercisePicker({ exercises, onSelect, onAddCustom, onClose, initialMuscle = '전체' }) {
   const [search, setSearch] = useState('')
   const [tab, setTab] = useState('all')
-  const [muscle, setMuscle] = useState('전체')
+  const [muscle, setMuscle] = useState(initialMuscle)
   const [equipment, setEquipment] = useState('전체')
   const [favorites, setFavorites] = useState(new Set())
   const [detail, setDetail] = useState(null)
