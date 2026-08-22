@@ -99,6 +99,17 @@ export default function Today() {
     })()
   }, [])
 
+  // 텔레그램 미니앱: 내부 화면(종목 선택/직접 추가)에서 BackButton 표시, 최상위에선 숨김
+  useEffect(() => {
+    const tg = window.Telegram?.WebApp
+    if (!tg?.initData) return
+    if (!pickerOpen && !customForm) { tg.BackButton.hide(); return }
+    const back = () => { setPickerOpen(false); setCustomForm(null) }
+    tg.BackButton.onClick(back)
+    tg.BackButton.show()
+    return () => tg.BackButton.offClick(back)
+  }, [pickerOpen, customForm])
+
   function addExercise(ex) {
     setEntries(prev => [...prev, emptyEntry(ex)])
     setPickerOpen(false)

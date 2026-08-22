@@ -1,6 +1,8 @@
 import { openDB } from 'idb'
+import { cloudDB, isTelegram } from './tgcloud'
 
-const dbp = openDB('fitlog', 4, {
+// 텔레그램 미니앱이면 CloudStorage, 아니면 IndexedDB — 인터페이스가 같아 아래 함수들은 분기 없음.
+const dbp = isTelegram() ? Promise.resolve(cloudDB) : openDB('fitlog', 4, {
   upgrade(d, oldVersion) {
     if (oldVersion < 1) {
       d.createObjectStore('profile')
