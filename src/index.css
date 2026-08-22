@@ -459,6 +459,68 @@ textarea {
   grid-template-columns: repeat(2, 1fr);
 }
 
+/* 측정 마네킹 — 몸(라이브러리 SVG, 가운데 50%) + 줄자 띠 오버레이(viewBox -50 0 200 200) */
+.measure-figure {
+  position: relative;
+  margin: 0 auto;
+}
+
+.measure-figure-model {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 25%;
+  width: 50%;
+}
+
+.measure-figure-model svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.measure-figure-bands {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.band ellipse {
+  fill: none;
+  stroke: rgba(255, 255, 255, .38);
+  stroke-width: 1;
+  transition: stroke .2s, stroke-width .2s;
+}
+
+.band line {
+  stroke: rgba(255, 255, 255, .22);
+  stroke-width: .6;
+  stroke-dasharray: 2 2;
+}
+
+.band text {
+  font-size: 9.5px;
+  fill: var(--text-2);
+  letter-spacing: .02em;
+}
+
+.band.on ellipse {
+  stroke: #fff;
+  stroke-width: 1.8;
+}
+
+.band.on line {
+  stroke: rgba(255, 255, 255, .7);
+  stroke-dasharray: none;
+}
+
+.band.on text {
+  fill: var(--text-1);
+  font-weight: 600;
+}
+
 .ratio-row {
   margin-top: 6px;
   padding-top: 6px;

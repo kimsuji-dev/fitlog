@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import WeightChart from './WeightChart'
 import Settings from './Settings'
+import MeasureFigure from './MeasureFigure'
 import { addWeight, getProfile } from './db'
 import { parseWeight, parseSize } from './validate'
 
@@ -31,6 +32,7 @@ export default function Measure({ weights, onSaved }) {
   const [kg, setKg] = useState('')
   const [sizes, setSizes] = useState({}) // {chest: '88', ...} 문자열 그대로
   const [heightCm, setHeightCm] = useState(null)
+  const [active, setActive] = useState(null) // 마네킹에서 강조할 부위 = 마지막으로 포커스한 입력칸
   const [msg, setMsg] = useState('')
 
   useEffect(() => { getProfile().then(p => setHeightCm(p?.heightCm || null)) }, [])
@@ -102,11 +104,12 @@ export default function Measure({ weights, onSaved }) {
           체중 (kg)
           <input type="text" inputMode="decimal" value={kg} onChange={e => setKg(e.target.value)} placeholder="58.5" />
         </label>
+        <MeasureFigure active={active} />
         <div className="measure-grid">
           {SIZES.slice(0, 3).map(([k, label]) => (
             <label key={k} className="field big">
               {label} (cm)
-              <input type="text" inputMode="decimal" value={sizes[k] || ''} onChange={e => setSizes(s => ({ ...s, [k]: e.target.value }))} placeholder="선택" />
+              <input type="text" inputMode="decimal" value={sizes[k] || ''} onChange={e => setSizes(s => ({ ...s, [k]: e.target.value }))} onFocus={() => setActive(k)} placeholder="선택" />
             </label>
           ))}
         </div>
@@ -114,7 +117,7 @@ export default function Measure({ weights, onSaved }) {
           {SIZES.slice(3).map(([k, label]) => (
             <label key={k} className="field big">
               {label} (cm)
-              <input type="text" inputMode="decimal" value={sizes[k] || ''} onChange={e => setSizes(s => ({ ...s, [k]: e.target.value }))} placeholder="선택" />
+              <input type="text" inputMode="decimal" value={sizes[k] || ''} onChange={e => setSizes(s => ({ ...s, [k]: e.target.value }))} onFocus={() => setActive(k)} placeholder="선택" />
             </label>
           ))}
         </div>
