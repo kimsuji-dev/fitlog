@@ -1,11 +1,12 @@
 import { MUSCLES } from './exercises'
 
-// 딥링크 쿼리(?muscle=가슴 / ?add=1) → { muscle } 또는 null(평소대로 열기).
+// 딥링크 쿼리 → { muscle }(?muscle=가슴 / ?add=1: 종목 추가 화면) | { tab: 'measure' }(?tab=measure: 측정 탭) | null(평소대로 열기).
 export function parseDeepLink(search) {
   const p = new URLSearchParams(search)
   const muscle = p.get('muscle')
   if (MUSCLES.includes(muscle)) return { muscle }
   if (p.get('add') === '1') return { muscle: '전체' }
+  if (p.get('tab') === 'measure') return { tab: 'measure' }
   return null
 }
 

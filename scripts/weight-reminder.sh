@@ -1,6 +1,21 @@
 #!/bin/zsh
-# 14일 경과 시 텔레그램 알림. 매일 실행되고 스스로 주기 판단 (맥 꺼져있던 날 보정)
+# 14일 경과 시 운동봇으로 측정 알림 (버튼 누르면 미니앱 측정 탭이 바로 열림). 매일 실행, 스스로 주기 판단.
 STAMP="$HOME/.fitlog-weight-reminder"
 if [[ ! -f $STAMP ]] || (( $(date +%s) - $(stat -f %m "$STAMP") >= 14*86400 )); then
-  tg-fit "🐰 몸무게 재셔야 하는 날이에요! ⚖️" && touch "$STAMP"
+  /usr/bin/python3 - <<'PY' && touch "$STAMP"
+import json, os, urllib.parse, urllib.request
+cfg = {}
+for line in open(os.path.expanduser("~/.config/aegis/telegram.env")):
+    line = line.strip()
+    if line and not line.startswith("#") and "=" in line:
+        k, v = line.split("=", 1); cfg[k.strip()] = v.strip()
+token, chat = cfg.get("TG_FIT_TOKEN", ""), cfg.get("TG_FIT_CHAT_ID", "")
+if not token or not chat:
+    raise SystemExit(1)
+text = ("📏 MEASUREMENT DAY girl!! 🗓️✨ 2주 지났어~ 체중 + 가슴/허리/엉덩이 재고 기록하자 📐🍑\n"
+        "Progress is progress 📈 numbers don't lie honey 💅 Tap below 👇")
+markup = json.dumps({"inline_keyboard": [[{"text": "📏 측정 기록하기", "web_app": {"url": "https://kimsuji-dev.github.io/fitlog/?tab=measure"}}]]})
+urllib.request.urlopen(f"https://api.telegram.org/bot{token}/sendMessage",
+    urllib.parse.urlencode({"chat_id": chat, "text": text, "reply_markup": markup}).encode(), timeout=20)
+PY
 fi

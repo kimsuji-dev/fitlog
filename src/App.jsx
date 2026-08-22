@@ -1,53 +1,54 @@
 import { useState, useEffect } from 'react'
 import Today from './Today'
-import History from './History'
-import Settings from './Settings'
-import NagLine from './NagLine'
-import { listSessions } from './db'
+import Measure from './Measure'
+import { listSessions, listWeights } from './db'
 import { volume } from './calc'
-
-const TABS = [
-  { id: 'today', label: '🏠 홈' },
-  { id: 'history', label: '📔 다이어리' },
-  { id: 'settings', label: '⚙️ 관리' },
-]
+import { parseDeepLink } from './validate'
 
 const todayStr = () => new Date().toLocaleDateString('sv-SE')
 
 export default function App() {
-  const [tab, setTab] = useState('today')
-  const [todayVolume, setTodayVolume] = useState(0)
-  const [totalSessions, setTotalSessions] = useState(0)
+  // 텔레그램 딥링크(?tab=measure)면 측정 탭으로 바로 연다
+  const [tab, setTab] = useState(() => parseDeepLink(location.search)?.tab || 'workout')
+  // 세션(최신순)·측정(오름차순)은 여기서 한 번 읽고 두 탭에 내려보낸다. 저장한 탭이 reload 를 부른다.
+  const [sessions, setSessions] = useState([])
+  const [weights, setWeights] = useState([])
 
-  useEffect(() => {
-    (async () => {
-      const sessions = await listSessions()
-      setTotalSessions(sessions.length)
-      const s = sessions.find(sess => sess.date === todayStr())
-      setTodayVolume(s ? volume(s) : 0)
-    })()
-  }, [])
+  const reloadSessions = async () => setSessions(await listSessions())
+  const reloadWeights = async () => setWeights(await listWeights())
+  useEffect(() => { reloadSessions(); reloadWeights() }, [])
+
+  // 탭을 갈아끼운 뒤 렌즈(.lg-heavy) 재부착 — 사라진 요소 정리 + 새 요소 등록
+  useEffect(() => { window.LiquidGlass?.apply() }, [tab])
+
+  const todaySession = sessions.find(s => s.date === todayStr())
+  const TABS = [
+    { id: 'workout', label: '💪 운동', count: sessions.length },
+    { id: 'measure', label: '📏 측정', count: weights.length },
+  ]
 
   return (
     <div className="app-shell">
-      <div className="card minihompy-header">
-        <div className="minihompy-title">♡ 수지님의 미니헬스 ♡</div>
-        <div className="minihompy-counter">TODAY 볼륨 {todayVolume}kg | TOTAL {totalSessions}판</div>
+      <header className="top">
+        <div className="top-title">수지님의 미니헬스<em>FITLOG</em></div>
+        <div className="top-stat">오늘 {todaySession ? volume(todaySession) : 0}kg</div>
+      </header>
+
+      <div style={{ display: tab === 'workout' ? undefined : 'none' }}>
+        <Today sessions={sessions} weights={weights} onSaved={reloadSessions} />
       </div>
-
-      <NagLine trigger={tab} />
-
-      <div style={{ display: tab === 'today' ? undefined : 'none' }}><Today /></div>
-      <div style={{ display: tab === 'history' ? undefined : 'none' }}><History active={tab === 'history'} /></div>
-      <div style={{ display: tab === 'settings' ? undefined : 'none' }}><Settings active={tab === 'settings'} /></div>
+      <div style={{ display: tab === 'measure' ? undefined : 'none' }}>
+        <Measure weights={weights} onSaved={reloadWeights} />
+      </div>
 
       <nav className="tab-nav">
         {TABS.map(t => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={tab === t.id ? 'active' : ''}>
-            {t.label}
+            className={tab === t.id ? 'active' : ''}
+            aria-label={`${t.label} ${t.count}`}>
+            {t.label}<span className="count">{t.count}</span>
           </button>
         ))}
       </nav>

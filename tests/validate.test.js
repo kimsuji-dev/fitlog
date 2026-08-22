@@ -29,4 +29,8 @@ describe('parseDeepLink', () => {
     expect(parseDeepLink('?muscle=날개')).toBeNull()
     expect(parseDeepLink('')).toBeNull()
   })
+  it('tab=measure면 측정 탭으로 연다, 모르는 탭은 null', () => {
+    expect(parseDeepLink('?tab=measure')).toEqual({ tab: 'measure' })
+    expect(parseDeepLink('?tab=diary')).toBeNull()
+  })
 })

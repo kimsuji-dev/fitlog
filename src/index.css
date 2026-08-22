@@ -1,19 +1,34 @@
+/* 먹빛 유리(ink-glass) — 팔레트는 토큰으로만, 색은 뜻이 있는 자리(삭제·오류)에만.
+   유리 등급:
+     .card        가벼운 유리(블러 한 줄) — 목록 항목·보조 카드. ExercisePicker/RestTimer 가 이 클래스를 쓰므로 glass-lite 레시피를 여기 둔다.
+     .card.glass  3겹 유리(.glass-layers > .gl-dist/.gl-tint/.gl-shine) — 주인공 패널. + .lg-heavy 면 liquid.js 렌즈 굴절.
+     .glass .card 유리 안의 카드 — 유리 위에 유리 금지라 반투명 흰색 + inset 스트로크로 내린다.
+   절대 규칙: 유리 조상에 overflow:hidden / filter / opacity<1 금지 (backdrop root). 자르려면 clip-path. */
+
 :root {
-  /* Y2K 싸이월드 미니홈피 — 펄 화이트 + 하늘 파랑 / 핫핑크 */
-  --primary-color: #7db4f5;   /* 하늘 파랑 — 주요 액션, 활성 탭, 강조 */
-  --primary-color-soft: #e8f1fd; /* 하늘 파랑 연한 배경 (칩/포커스 링용) */
-  --secondary-color: #ff7eb6; /* 핫핑크 — 성공/저장 */
-  --tertiary-color: #f4f7fc;  /* 서브 배경 (인풋 웰) */
-  --accent-color: #ff7eb6;    /* 핫핑크 — 삭제/경고/생리 강조 */
-  --text-color: #2b3a55;      /* 딥 네이비 — 본문 텍스트 */
-  --text-muted: #7c8aa5;      /* 뮤트 블루그레이 — 라벨/보조 정보 */
-  --border-color: #dbe4f2;    /* 헤어라인 */
-  --pink-border: #ff9ecb;     /* 카드 핑크 점선 테두리 */
-  --blue-border: #a9cbf7;     /* 카드 스카이블루 점선 테두리 */
-  --border-radius: 14px;
-  --shadow: 0 1px 2px rgba(43, 58, 85, .06), 0 4px 12px rgba(43, 58, 85, .06);
-  --bg-color: #f4f7fc;        /* 펄 화이트 — 배경 */
-  --panel-color: #ffffff;     /* 카드 배경 */
+  color-scheme: dark;
+
+  --ink: #0a0a0c;
+  --text-1: rgba(255, 255, 255, .96);   /* 본문 */
+  --text-2: rgba(255, 255, 255, .70);   /* 보조 */
+  --text-3: rgba(255, 255, 255, .52);   /* 흐린 글씨 — .40 은 4.5:1 을 못 넘긴다 */
+
+  --glass-tint: rgba(0, 0, 0, .34);
+  --glass-tint-strong: rgba(0, 0, 0, .46);
+  --glass-border: rgba(255, 255, 255, .18);
+  --inner: rgba(255, 255, 255, .06);               /* 유리 안쪽 요소 */
+  --inner-stroke: inset 0 0 0 1px rgba(255, 255, 255, .12);
+
+  --danger: #e57373;                               /* 삭제·오류에만 */
+  --serif: Georgia, "Times New Roman", "Batang", serif;
+
+  --radius-lg: 20px;
+  --radius-sm: 12px;
+  --shadow-panel: 0 24px 60px rgba(0, 0, 0, .62);
+  --shine:
+    inset 1.2px 1.2px .8px -1px rgba(255, 255, 255, .55),
+    inset -1px -1px .8px -1px rgba(255, 255, 255, .28),
+    inset 0 0 24px 2px rgba(255, 255, 255, .06);
 }
 
 * {
@@ -22,8 +37,9 @@
   box-sizing: border-box;
 }
 
-html, body {
-  /* 가로 스크롤 방지: 칩 줄 같은 내부 스크롤 영역이 페이지를 넓히지 못하게 */
+/* 가로 스크롤 방지는 루트에만 — 루트의 overflow 는 뷰포트로 넘어가 backdrop root 를 만들지 않는다.
+   body / .app-shell 에 두면 그 아래 유리가 전부 눈먼다. */
+html {
   max-width: 100%;
   overflow-x: hidden;
 }
@@ -32,9 +48,22 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard', 'Noto Sans KR', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--bg-color);
-  color: var(--text-color);
+  background: var(--ink);
+  color: var(--text-1);
   min-height: 100vh;
+}
+
+/* 먹빛 배경 — radial-gradient 만. filter:blur 는 렌즈가 백드롭을 구울 때마다 재계산돼 금지. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle 70vw at 15% -10%, rgba(255, 255, 255, .16), transparent 70%),
+    radial-gradient(circle 55vw at 95% 35%, rgba(255, 255, 255, .09), transparent 70%),
+    radial-gradient(circle 60vw at 30% 110%, rgba(255, 255, 255, .07), transparent 70%),
+    var(--ink);
 }
 
 #root {
@@ -43,125 +72,225 @@ body {
   flex-direction: column;
 }
 
+:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, .92);
+  outline-offset: 2px;
+}
+
+/* ── 글 ── */
 h2 {
-  font-size: 16px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 20px;
   font-weight: 700;
-  margin-bottom: 8px;
-  color: var(--text-color);
-  letter-spacing: 0.02em;
-  padding-bottom: 6px;
-  border-bottom: 2px dotted var(--blue-border);
+  letter-spacing: -.01em;
+  margin: 8px 0 12px;
 }
 
-h2::after {
-  content: none;
+/* 큰 한글 제목 + 자간 띄운 세리프 짝 */
+h2 em,
+.top-title em {
+  font-family: var(--serif);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: .22em;
+  color: var(--text-3);
 }
 
+.text-sm {
+  font-size: .85rem;
+  color: var(--text-2);
+}
+
+/* 숫자는 세리프 */
+.num,
+.count,
+input[type=number],
+input[type=date],
+input[type=time],
+input[inputmode=numeric],
+input[inputmode=decimal] {
+  font-family: var(--serif);
+  letter-spacing: -.01em;
+}
+
+/* ── 컨트롤: 가는 테두리. 채운 흰 알약은 주요 액션(.big-btn)·활성 칩에만, 그 위 글씨는 먹빛으로 반전 ── */
 button {
-  font-family: inherit;
+  font: inherit;
   font-size: 1rem;
   cursor: pointer;
-  border: none;
-  border-radius: 12px;
-  padding: 12px 20px;
-  background: var(--tertiary-color);
-  color: var(--text-color);
-  transition: opacity 0.1s ease, transform 0.1s ease;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-1);
+  transition: transform .1s ease, background-color .15s ease;
 }
 
 button:active {
-  opacity: 0.7;
+  transform: scale(.98);
+  background: rgba(255, 255, 255, .08);
 }
 
 button:disabled {
-  opacity: 0.5;
+  color: var(--text-3);
   cursor: default;
-}
-
-input, textarea, select {
-  font-family: inherit;
-  font-variant-numeric: tabular-nums;
-  padding: 12px 14px;
-  border: 2px solid var(--border-color);
-  border-radius: 10px;
-  font-size: 1rem;
-  background: #ffffff;
-  color: var(--text-color);
-}
-
-input:focus, textarea:focus, select:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px var(--primary-color-soft);
-}
-
-.card {
-  background: var(--panel-color);
-  border: 2px dotted var(--blue-border);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow);
-  padding: 16px;
-  margin-bottom: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.card:nth-of-type(even) {
-  border-color: var(--pink-border);
 }
 
 .big-btn {
   display: block;
-  position: relative;
   width: 100%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, .55) 0%, rgba(255, 255, 255, 0) 45%), var(--primary-color);
-  color: #ffffff;
+  min-height: 52px;
+  padding: 14px 18px;
+  border: 0;
+  background: #ffffff;
+  color: var(--ink);
   font-size: 1.05rem;
   font-weight: 700;
-  padding: 14px 18px;
-  min-height: 48px;
-  border-radius: 12px;
   margin-bottom: 12px;
 }
 
-.big-btn::after {
-  content: none;
+.big-btn * { color: inherit; }
+
+.big-btn:active {
+  background: #e4e4e6;
 }
 
-/* OFF 상태 토글: 채워진 액션 버튼과 한눈에 구분되도록 muted 배경 */
-.big-btn.off {
-  background: var(--tertiary-color);
-  color: var(--text-muted);
-}
-
-.big-btn.done {
-  background: linear-gradient(180deg, rgba(255, 255, 255, .55) 0%, rgba(255, 255, 255, 0) 45%), var(--secondary-color);
+.big-btn:disabled {
+  background: rgba(255, 255, 255, .55);
+  color: var(--ink);
 }
 
 .icon-btn {
   background: transparent;
-  border: none;
+  border: 0;
   padding: 8px;
   min-width: 44px;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted);
+  color: var(--text-2);
 }
 
-.icon-btn:active {
-  opacity: 0.6;
+.icon-btn.danger {
+  color: var(--danger);
 }
 
+input, textarea, select {
+  font: inherit;
+  font-size: 1rem;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  background: var(--inner);
+  color: var(--text-1);
+  font-variant-numeric: tabular-nums;
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--text-3);
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, .92);
+}
+
+textarea {
+  width: 100%;
+  min-height: 72px;
+  resize: vertical;
+}
+
+/* 세로 라벨 + 입력칸 */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: .85rem;
+  color: var(--text-2);
+  letter-spacing: .02em;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  color: var(--text-1);
+}
+
+/* ── 유리 ── */
+.card {
+  position: relative;
+  background: var(--glass-tint);
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  backdrop-filter: blur(16px) saturate(170%);
+  box-shadow: var(--shine), 0 14px 38px rgba(0, 0, 0, .38);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 3겹 유리는 겹(.glass-layers)이 블러·틴트·림을 맡는다 — 자기 블러는 끈다 */
+.card.glass {
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: var(--shadow-panel);
+}
+
+/* 유리 위에 유리 금지 — 안쪽은 반투명 흰색 + inset 스트로크 */
+.glass .card,
+.entry-row,
+.notice,
+.rest-timer-display {
+  background: var(--inner);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: var(--inner-stroke);
+  border-radius: var(--radius-sm);
+}
+
+/* ── 상단 ── */
+.top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 4px 16px;
+}
+
+.top-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+
+.top-title em {
+  margin-left: 8px;
+}
+
+.top-stat {
+  font-family: var(--serif);
+  font-size: 13px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+
+/* ── 오늘 세션 ── */
 .entry-row {
-  border-radius: 12px;
   padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  background: var(--tertiary-color);
 }
 
 .entry-header {
@@ -170,21 +299,21 @@ input:focus, textarea:focus, select:focus {
   align-items: center;
 }
 
-.set-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.set-row input {
-  width: 64px;
-}
-
 .entry-header-info {
   display: flex;
   flex-direction: column;
   flex: 1;
   gap: 2px;
+}
+
+.set-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.set-row input {
+  width: 80px;
 }
 
 .set-table {
@@ -195,73 +324,64 @@ input:focus, textarea:focus, select:focus {
 .set-table-header,
 .set-table-row {
   display: grid;
-  grid-template-columns: 28px 1fr 1fr 40px 28px;
-  gap: 6px;
+  grid-template-columns: 24px 1fr 1fr 44px 44px;
+  gap: 8px;
   align-items: center;
 }
 
 .set-table-header {
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-muted);
+  letter-spacing: .06em;
+  color: var(--text-2);
   text-align: center;
-  padding-bottom: 6px;
+  padding-bottom: 4px;
 }
 
 .set-table-row {
-  padding: 6px 0;
-  border-top: 1px solid var(--border-color);
+  padding: 4px 0;
+  border-top: 1px solid rgba(255, 255, 255, .08);
 }
 
 .set-num {
   text-align: center;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-muted);
+  font-family: var(--serif);
+  color: var(--text-2);
 }
 
 .set-table-row input {
   width: 100%;
   min-width: 0;
-  padding: 8px 6px;
+  padding: 8px 4px;
   text-align: center;
-  font-variant-numeric: tabular-nums;
-  background: var(--panel-color);
 }
 
 .set-done-btn {
   background: transparent;
-  border: none;
-  padding: 2px;
+  border: 0;
+  padding: 0;
+  min-width: 44px;
   font-size: 1.3rem;
   line-height: 1;
 }
 
-.set-done-btn:active {
-  opacity: 0.6;
-}
-
+/* 휴식 타이머 — 세션 유리 안에 있으므로 안쪽 표면 */
 .rest-timer-display {
-  font-size: 24px;
+  font-family: var(--serif);
+  font-size: 28px;
   font-weight: 700;
-  font-variant-numeric: tabular-nums;
   text-align: center;
-  color: var(--primary-color);
-  background: #ffffff;
-  border: 2px solid var(--border-color);
-  border-radius: 10px;
-  padding: 10px;
-  box-shadow: inset 0 1px 3px rgba(43, 58, 85, .08);
+  color: var(--text-1);
+  padding: 12px;
 }
 
 .rest-timer-done .rest-timer-display {
-  color: var(--accent-color);
-  animation: rest-flash 0.6s steps(2) 3;
+  animation: rest-flash .6s steps(2) 3;
 }
 
 @keyframes rest-flash {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  0%, 100% { transform: none; }
+  50% { transform: scale(.97); }
 }
 
 .rest-timer-controls {
@@ -272,187 +392,171 @@ input:focus, textarea:focus, select:focus {
 
 .rest-timer-controls button {
   min-width: 56px;
-  min-height: 44px;
   font-size: 1.1rem;
   font-weight: 600;
 }
 
 .rest-timer-play {
-  background: var(--primary-color);
-  color: #fff;
-}
-
-.exercise-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.diet-row {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-
-.diet-row button {
-  font-size: 1.4rem;
   background: #ffffff;
-  border: 2px solid var(--border-color);
-  min-width: 48px;
-  min-height: 48px;
-  border-radius: 12px;
+  border-color: #ffffff;
+  color: var(--ink);
 }
 
-.diet-row button.selected {
-  background: var(--primary-color-soft);
-  border-color: var(--accent-color);
-  position: relative;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .diet-row button.selected {
-    animation: slot-lock 0.4s ease-out 1;
-  }
-}
-
-@keyframes slot-lock {
-  0% { transform: scale(1) rotate(0deg); }
-  35% { transform: scale(1.25) rotate(-12deg); }
-  65% { transform: scale(0.95) rotate(8deg); }
-  100% { transform: scale(1) rotate(0deg); }
-}
-
+/* ── 알림 ── */
 .notice {
-  background: var(--tertiary-color);
-  border-radius: 12px;
-  padding: 12px 14px;
+  padding: 12px 16px;
   margin-bottom: 12px;
-  font-size: 0.9rem;
-  color: var(--text-muted);
+  font-size: .9rem;
+  color: var(--text-2);
 }
 
 .notice.success {
-  background: #fff0f7;
-  color: #d6478f;
-  border: 2px dotted var(--pink-border);
+  color: var(--text-1);
+  background: rgba(255, 255, 255, .10);
 }
 
 .notice.error {
-  background: #fff0f0;
-  color: #d64545;
+  color: var(--danger);
+  background: rgba(229, 115, 115, .10);
+  box-shadow: inset 0 0 0 1px rgba(229, 115, 115, .35);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
+/* ── 이력 ── */
+.entry-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toggle-btn {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  padding: 4px 0;
+}
+
+/* ── 측정 ── */
+.measure-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.field.big input {
+  min-height: 52px;
+  font-size: 1.25rem;
+  padding: 12px 14px;
+}
+
+.settings-summary {
+  cursor: pointer;
+  list-style: none;
+  text-align: center;
+  padding: 12px;
+  min-height: 44px;
+  font-size: .85rem;
+  letter-spacing: .06em;
+  color: var(--text-2);
+}
+
+.settings-summary::-webkit-details-marker {
+  display: none;
+}
+
+details[open] .settings-summary {
+  color: var(--text-1);
+}
+
+/* ── 앱 셸 / 탭 — overflow:hidden 금지 (유리의 backdrop root) ── */
 .app-shell {
   max-width: 480px;
   width: 100%;
   margin: 0 auto;
-  padding: 12px;
-  padding-bottom: 88px;
-  overflow-x: hidden;
+  padding: 12px 12px 96px;
 }
 
+/* 탭: 알약이 아니라 밑줄 + 개수 */
 .tab-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   display: flex;
-  border-top: 1px solid var(--border-color);
-  background: var(--panel-color);
   z-index: 100;
+  background: var(--glass-tint-strong);
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  backdrop-filter: blur(16px) saturate(170%);
+  border-top: 1px solid var(--glass-border);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .tab-nav button {
   flex: 1;
-  padding: 12px 8px;
+  position: relative;
   min-height: 56px;
-  border: none;
+  border: 0;
   border-radius: 0;
   background: transparent;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
-.tab-nav button:active {
-  opacity: 0.7;
-}
-
-.tab-nav button.active {
-  font-weight: 600;
-  color: var(--primary-color);
-}
-
-.text-sm {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
-.entry-list {
+  color: var(--text-2);
+  font-size: .95rem;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 6px;
 }
 
-.minihompy-header {
-  align-items: center;
-  gap: 4px;
-  text-align: center;
+.tab-nav button:active {
+  transform: none;
+  background: rgba(255, 255, 255, .06);
 }
 
-.minihompy-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text-color);
-  letter-spacing: 0.04em;
+.tab-nav .count {
+  font-size: .85rem;
+  color: var(--text-3);
 }
 
-.minihompy-counter {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
+.tab-nav button.active {
+  color: var(--text-1);
 }
 
-.nag-line {
-  background: var(--primary-color-soft);
-  color: var(--text-color);
-  border-radius: 12px;
-  padding: 10px 14px;
-  margin-bottom: 12px;
-  font-size: 0.85rem;
+.tab-nav button.active .count {
+  color: var(--text-2);
 }
 
-.nag-line.info {
-  background: #eaf7f0;
+.tab-nav button.active::after {
+  content: "";
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 8px;
+  height: 2px;
+  background: #ffffff;
 }
 
-.nag-line-header {
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--primary-color);
-  opacity: 0.75;
-  margin-bottom: 2px;
-}
-
-.toggle-btn {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  text-align: left;
-}
-
-/* ── 운동 종목 선택기 (ExercisePicker) ── */
+/* ── 운동 종목 선택기 (ExercisePicker — 마크업은 손대지 않고 스타일만) ── */
 .exercise-picker {
-  padding: 16px;
   min-width: 0;
-  overflow-x: hidden;
 }
 
+/* 검색은 실선 한 줄, 포커스 시 흰색 */
 .picker-search {
   width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--glass-border);
+  border-radius: 0;
+  padding: 10px 0;
+}
+
+.picker-search:focus {
+  border-bottom-color: rgba(255, 255, 255, .92);
 }
 
 .chip-row {
@@ -478,24 +582,23 @@ input:focus, textarea:focus, select:focus {
 
 .chip {
   flex: none;
-  padding: 8px 14px;
-  font-size: 0.8rem;
-  border-radius: 999px;
-  background: var(--tertiary-color);
-  color: var(--text-muted);
+  min-height: 44px;
+  padding: 0 14px;
+  font-size: .85rem;
+  color: var(--text-2);
   white-space: nowrap;
-  min-height: 36px;
 }
 
 .chip.active {
-  background: var(--primary-color);
-  color: #fff;
+  background: #ffffff;
+  border-color: #ffffff;
+  color: var(--ink);
 }
 
 .picker-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   max-height: 50vh;
   overflow-y: auto;
 }
@@ -504,8 +607,9 @@ input:focus, textarea:focus, select:focus {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--tertiary-color);
-  border-radius: 12px;
+  background: var(--inner);
+  box-shadow: var(--inner-stroke);
+  border-radius: var(--radius-sm);
   padding: 4px 8px;
 }
 
@@ -515,13 +619,10 @@ input:focus, textarea:focus, select:focus {
   display: flex;
   align-items: center;
   background: transparent;
-  border: none;
+  border: 0;
+  border-radius: 0;
   padding: 8px 4px;
   text-align: left;
-}
-
-.picker-row-main:active {
-  opacity: 0.7;
 }
 
 .picker-row-info {
@@ -546,27 +647,27 @@ input:focus, textarea:focus, select:focus {
 
 .equipment-chip {
   flex: none;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  background: var(--panel-color);
+  font-size: .75rem;
+  color: var(--text-2);
+  border: 1px solid var(--glass-border);
   border-radius: 999px;
   padding: 2px 8px;
 }
 
 .heart-btn {
   font-size: 1.3rem;
-  color: var(--text-muted);
+  color: var(--text-3);
 }
 
 .heart-btn.active {
-  color: var(--accent-color);
+  color: #ffffff;
 }
 
-/* ── 운동 상세 화면 (ExerciseDetail) ── */
+/* ── 운동 상세 (ExerciseDetail) ── */
 .exercise-detail {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .detail-header {
@@ -583,14 +684,15 @@ input:focus, textarea:focus, select:focus {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .detail-heading {
   align-self: flex-start;
-  font-size: 0.8rem;
+  font-size: .8rem;
   font-weight: 600;
-  color: var(--text-muted);
+  letter-spacing: .06em;
+  color: var(--text-2);
 }
 
 .motion-photo-pair {
@@ -613,13 +715,13 @@ input:focus, textarea:focus, select:focus {
   width: 100%;
   aspect-ratio: 850 / 567;
   object-fit: cover;
-  border-radius: 10px;
-  border: 1px dotted var(--pink-border);
-  background: var(--tertiary-color);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-border);
+  background: var(--inner);
 }
 
 .motion-photo figcaption {
-  color: var(--text-muted);
+  color: var(--text-2);
 }
 
 .detail-cues {
@@ -627,7 +729,7 @@ input:focus, textarea:focus, select:focus {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 0.9rem;
+  font-size: .9rem;
   padding: 0 2px;
 }
 
@@ -640,14 +742,18 @@ input:focus, textarea:focus, select:focus {
   content: '·';
   position: absolute;
   left: 0;
-  color: var(--primary-color);
+  color: var(--text-2);
 }
 
-.detail-muscle-names {
-  text-align: center;
-}
-
+.detail-muscle-names,
 .detail-disclaimer {
   text-align: center;
 }
 
+/* ── 모션 최소화 ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

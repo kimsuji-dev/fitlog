@@ -1,0 +1,42 @@
+/* 리퀴드 글라스 코어 — 3겹 구조.
+   한 요소에 blur·tint·shine 을 몰면 blur 가 테두리 빛까지 뭉갠다.
+   .lg-heavy 를 붙이고 LiquidGlass.apply() 를 부르면 .gl-dist 의
+   backdrop-filter 가 요소 크기에 맞는 렌즈 변위 필터로 교체된다.
+
+   마크업:
+     <div class="panel glass lg-heavy">
+       <div class="glass-layers" aria-hidden="true">
+         <span class="gl-dist"></span><span class="gl-tint"></span><span class="gl-shine"></span>
+       </div>
+       ...내용...
+     </div>
+
+   ⚠ 이 파일의 .glass-layers 는 overflow:hidden 을 쓴다. "유리를 overflow 로 자르지
+     말라"는 규칙의 유일한 예외다 — border-radius:inherit 가 공짜로 따라오기 때문.
+     프로덕션에서 굴절이 붙어 돌지만 픽셀 A/B 는 미검증이다.
+     패널 유리가 납작해 보이면 여기부터 의심하라.
+     → references/backdrop-traps.md 의 '아직 안 갈린 예외'
+*/
+
+/* ---------- 리퀴드 글라스 코어 ---------- */
+.glass { position: relative; isolation: isolate; }
+.glass-layers { position: absolute; inset: 0; z-index: -1; border-radius: inherit; overflow: hidden; }
+.glass-layers span { position: absolute; inset: 0; border-radius: inherit; display: block; }
+.gl-dist {
+  z-index: 0;
+  backdrop-filter: blur(6px) saturate(180%);
+  -webkit-backdrop-filter: blur(6px) saturate(180%);
+  /* .lg-heavy 요소는 liquid.js가 요소 크기에 맞는 렌즈 변위 필터를 인라인으로 덮어씀 */
+}
+.gl-tint { z-index: 1; background: var(--glass-tint); }
+.gl-shine { z-index: 2; box-shadow: var(--shine); }
+.glass { box-shadow: var(--shadow-panel); border-radius: var(--radius-lg); }
+
+/* 카드용 가벼운 글라스 (블러만) */
+.glass-lite {
+  position: relative;
+  background: var(--glass-tint);
+  backdrop-filter: blur(22px) saturate(170%);
+  -webkit-backdrop-filter: blur(22px) saturate(170%);
+  box-shadow: var(--shine), 0 14px 38px rgba(0, 0, 0, 0.38);
+}
