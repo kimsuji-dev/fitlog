@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { MUSCLES, EQUIPMENT } from './exercises'
+import { MUSCLES, EQUIPMENT, matchesSearch } from './exercises'
 import { listSessions, listFavorites, toggleFavorite } from './db'
 import MuscleFigure from './MuscleFigure'
 import MotionDiagram from './MotionDiagram'
@@ -108,7 +108,7 @@ export default function ExercisePicker({ exercises, onSelect, onAddCustom, onClo
 
   const list = useMemo(() => {
     let l = exercises
-    if (search.trim()) l = l.filter(ex => ex.name.includes(search.trim()))
+    if (search.trim()) l = l.filter(ex => matchesSearch(ex.name, search))
     if (muscle !== '전체') l = l.filter(ex => (ex.muscles || []).includes(muscle))
     if (equipment !== '전체') l = l.filter(ex => ex.equipment === equipment)
     if (tab === 'fav') l = l.filter(ex => favorites.has(ex.name))

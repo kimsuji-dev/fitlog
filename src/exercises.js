@@ -97,3 +97,7 @@ export const BUILTIN = [
   { name: '이너/아웃 싸이(유산소)', met: 5, type: 'cardio', muscles: ['대퇴사두'], equipment: '유산소', pattern: 'isolationMachine', photos: null },
   { name: '실내자전거', met: 7, type: 'cardio', muscles: ['대퇴사두', '종아리'], equipment: '유산소', pattern: 'cardio', photos: 'Bicycling_Stationary' },
 ]
+
+// 검색 매칭 — 공백·대소문자를 무시한다. '몬스터글루트'로도 '몬스터 글루트'가 잡히게.
+const norm = s => (s || '').replace(/\s+/g, '').toLowerCase()
+export const matchesSearch = (name, query) => norm(name).includes(norm(query))
