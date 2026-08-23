@@ -100,8 +100,9 @@ export default function Today({ sessions, weights, onSaved }) {
     setPickerOpen(true)
   }
 
+  // 새로 고른 종목은 맨 위로 (아래에 붙으면 화면 밖이라 못 찾는다). 먼저 한 운동일수록 아래.
   function addExercise(ex) {
-    setEntries(prev => [...prev, emptyEntry(ex)])
+    setEntries(prev => [emptyEntry(ex), ...prev])
     setPickerOpen(false)
   }
 
