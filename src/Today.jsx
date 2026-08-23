@@ -4,7 +4,7 @@ import ExercisePicker from './ExercisePicker'
 import RestTimer from './RestTimer'
 import History from './History'
 import { saveSession, getSession, addCustomExercise, listCustomExercises } from './db'
-import { calories, volume, stars as calcStars, recentAvgVolume } from './calc'
+import { calories, volume, stars as calcStars, recentAvgVolume, nextSet } from './calc'
 import { buildEvent } from './calendarEvent'
 import { connectGoogle, upsertEvent, isConnected } from './google'
 import { parseDeepLink } from './validate'
@@ -123,7 +123,7 @@ export default function Today({ sessions, weights, onSaved }) {
     setEntries(prev => prev.filter((_, idx) => idx !== i))
   }
   function addSet(i) {
-    setEntries(prev => prev.map((e, idx) => idx === i ? { ...e, sets: [...e.sets, { reps: 10, kg: 0, done: false }] } : e))
+    setEntries(prev => prev.map((e, idx) => idx === i ? { ...e, sets: [...e.sets, nextSet(e.sets)] } : e))
   }
   function updateSet(i, si, patch) {
     setEntries(prev => prev.map((e, idx) =>

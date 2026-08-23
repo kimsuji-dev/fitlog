@@ -44,3 +44,9 @@ export function recentAvgVolume(sessions, todayDate) {
   if (!recent.length) return 0
   return recent.reduce((a, s) => a + volume(s), 0) / recent.length
 }
+
+// 세트 추가 시 직전 세트의 무게·횟수를 그대로 이어받는다 (완료 체크는 해제).
+export const nextSet = sets => {
+  const last = sets?.[sets.length - 1]
+  return { reps: last?.reps ?? 10, kg: last?.kg ?? 0, done: false }
+}

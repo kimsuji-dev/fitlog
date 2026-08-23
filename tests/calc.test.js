@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { sessionMinutes, calories, volume, stars, recentAvgVolume } from '../src/calc.js'
+import { sessionMinutes, calories, volume, stars, recentAvgVolume, nextSet } from '../src/calc.js'
 
 const weightEntry = (kg, reps, n) => ({ name: 'x', met: 5, type: 'weight', sets: Array(n).fill({ reps, kg }) })
 const session = (over = {}) => ({ date: '2026-08-17', start: '18:00', end: '19:00', entries: [], memo: '', eventId: null, ...over })
@@ -55,5 +55,18 @@ describe('calc', () => {
       session({ date: '2026-06-01', entries: [weightEntry(99, 10, 9)] }), // 오래됨, 제외
     ]
     expect(recentAvgVolume(sessions, '2026-08-17')).toBe(1000)
+  })
+})
+
+describe('nextSet — 세트 추가 시 직전 값 복사', () => {
+  it('마지막 세트의 무게·횟수를 이어받고 완료는 해제한다', () => {
+    expect(nextSet([{ reps: 12, kg: 20, done: true }])).toEqual({ reps: 12, kg: 20, done: false })
+  })
+  it('여러 세트면 가장 마지막 것을 따른다', () => {
+    const sets = [{ reps: 10, kg: 0, done: true }, { reps: 8, kg: 35, done: true }]
+    expect(nextSet(sets)).toEqual({ reps: 8, kg: 35, done: false })
+  })
+  it('세트가 없으면 기본값 10회 0kg', () => {
+    expect(nextSet([])).toEqual({ reps: 10, kg: 0, done: false })
   })
 })
