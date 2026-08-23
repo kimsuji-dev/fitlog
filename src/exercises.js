@@ -76,6 +76,8 @@ export const BUILTIN = [
   { name: '루마니안 데드리프트', met: 5, type: 'weight', muscles: ['햄스트링', '둔근'], equipment: '바벨', pattern: 'hinge', photos: 'Romanian_Deadlift' },
   { name: '힙 어덕션(이너 싸이 머신)', met: 5, type: 'weight', muscles: ['대퇴사두'], equipment: '머신', pattern: 'isolationMachine', photos: 'Thigh_Adductor' },
   { name: '힙 어브덕션(아웃 싸이 머신)', met: 5, type: 'weight', muscles: ['둔근'], equipment: '머신', pattern: 'isolationMachine', photos: 'Thigh_Abductor' },
+  // 몬스터 글루트: 앉아서 다리를 벌리는 외전 머신. 힙 어브덕션과 같은 계열이지만 가동범위·저항이 더 크다 (대·중·소둔근)
+  { name: '몬스터 글루트', met: 5, type: 'weight', muscles: ['둔근'], equipment: '머신', pattern: 'isolationMachine', photos: null },
   { name: '시티드 카프레이즈', met: 5, type: 'weight', muscles: ['종아리'], equipment: '머신', pattern: 'isolationMachine', photos: 'Seated_Calf_Raise' },
   { name: '스탠딩 카프레이즈', met: 5, type: 'weight', muscles: ['종아리'], equipment: '머신', pattern: 'isolationMachine', photos: 'Standing_Calf_Raises' },
   { name: '글루트 킥백', met: 4, type: 'weight', muscles: ['둔근'], equipment: '맨몸', pattern: 'isolationMachine', photos: 'Glute_Kickback' },
