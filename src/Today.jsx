@@ -3,7 +3,7 @@ import { BUILTIN, MUSCLES, EQUIPMENT } from './exercises'
 import ExercisePicker from './ExercisePicker'
 import RestTimer from './RestTimer'
 import History from './History'
-import { saveSession, getSession, addCustomExercise, listCustomExercises } from './db'
+import { saveSession, getSession, addCustomExercise, listCustomExercises, removeCustomExercise } from './db'
 import { calories, volume, stars as calcStars, recentAvgVolume, nextSet } from './calc'
 import { buildEvent } from './calendarEvent'
 import { connectGoogle, upsertEvent, isConnected } from './google'
@@ -45,8 +45,12 @@ export default function Today({ sessions, weights, onSaved }) {
 
   useEffect(() => {
     (async () => {
+      // 빌트인과 이름이 겹치는 커스텀 종목은 목록에 중복으로 뜨고 선택도 꼬인다 → 저장소에서 정리
       const custom = await listCustomExercises()
-      setExerciseList([...BUILTIN, ...custom])
+      const builtinNames = new Set(BUILTIN.map(e => e.name))
+      const dupes = custom.filter(e => builtinNames.has(e.name))
+      for (const d of dupes) await removeCustomExercise(d.name)
+      setExerciseList([...BUILTIN, ...custom.filter(e => !builtinNames.has(e.name))])
 
       const s = await getSession(today)
       if (s) {
@@ -102,18 +106,33 @@ export default function Today({ sessions, weights, onSaved }) {
   }
 
   async function saveCustomExercise() {
-    if (!customForm?.name || !customForm?.met) return
+    const name = (customForm?.name || '').trim()
+    if (!name) { setCustomForm({ ...customForm, error: '종목명을 입력해주세요' }); return }
+    const key = n => n.replace(/\s+/g, '')
+    const existing = exerciseList.find(e => key(e.name) === key(name))
+    if (existing) {  // 이미 있는 종목 — 새로 만들지 말고 그대로 추가한다
+      setCustomForm(null)
+      addExercise(existing)
+      return
+    }
     const ex = {
-      name: customForm.name,
-      met: Number(customForm.met),
+      name,
+      met: Number(customForm.met) || (customForm.type === 'cardio' ? 7 : 5),  // MET 비워도 저장되게
       type: customForm.type,
       muscles: customForm.muscle ? [customForm.muscle] : [],
       equipment: customForm.equipment || '맨몸',
+      pattern: customForm.type === 'cardio' ? 'cardio' : 'isolationMachine',
     }
     await addCustomExercise(ex)
     setExerciseList(prev => [...prev, ex])
     setCustomForm(null)
     addExercise(ex)
+  }
+
+  // 직접 추가한 종목만 지운다 (빌트인은 목록에 삭제 버튼이 없음)
+  async function deleteCustomExercise(name) {
+    await removeCustomExercise(name)
+    setExerciseList(prev => prev.filter(e => e.name !== name))
   }
 
   function updateEntry(i, patch) {
@@ -188,6 +207,7 @@ export default function Today({ sessions, weights, onSaved }) {
           initialMuscle={pickerMuscle}
           onSelect={addExercise}
           onAddCustom={() => { setPickerOpen(false); setCustomForm({ name: '', met: '', type: 'weight', muscle: '', equipment: '맨몸' }) }}
+          onDeleteCustom={deleteCustomExercise}
           onClose={() => setPickerOpen(false)}
         />
       )}
@@ -207,6 +227,7 @@ export default function Today({ sessions, weights, onSaved }) {
           <select value={customForm.equipment} onChange={e => setCustomForm({ ...customForm, equipment: e.target.value })}>
             {EQUIPMENT.map(eq => <option key={eq} value={eq}>{eq}</option>)}
           </select>
+          {customForm.error && <div className="text-sm">{customForm.error}</div>}
           <button onClick={saveCustomExercise}>저장</button>
           <button onClick={() => setCustomForm(null)}>취소</button>
         </div>

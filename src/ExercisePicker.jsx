@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { MUSCLES, EQUIPMENT, matchesSearch } from './exercises'
+import { MUSCLES, EQUIPMENT, BUILTIN, matchesSearch } from './exercises'
 import { listSessions, listFavorites, toggleFavorite } from './db'
 import MuscleFigure from './MuscleFigure'
 import MotionDiagram from './MotionDiagram'
@@ -83,7 +83,9 @@ function useUsageStats() {
   return { counts, recentOrder }
 }
 
-export default function ExercisePicker({ exercises, onSelect, onAddCustom, onClose, initialMuscle = '전체' }) {
+const BUILTIN_NAMES = new Set(BUILTIN.map(e => e.name))
+
+export default function ExercisePicker({ exercises, onSelect, onAddCustom, onDeleteCustom, onClose, initialMuscle = '전체' }) {
   const [search, setSearch] = useState('')
   const [tab, setTab] = useState('all')
   const [muscle, setMuscle] = useState(initialMuscle)
@@ -177,6 +179,13 @@ export default function ExercisePicker({ exercises, onSelect, onAddCustom, onClo
             >
               {favorites.has(ex.name) ? '♥' : '♡'}
             </button>
+            {!BUILTIN_NAMES.has(ex.name) && (
+              <button
+                className="icon-btn danger"
+                onClick={e => { e.stopPropagation(); onDeleteCustom?.(ex.name) }}
+                aria-label="직접 추가한 종목 삭제"
+              >✕</button>
+            )}
           </div>
         ))}
         {list.length === 0 && <div className="text-sm">조건에 맞는 종목이 없어요</div>}

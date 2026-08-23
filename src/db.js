@@ -59,6 +59,7 @@ export const isInPeriod = async date =>
 
 export const addCustomExercise = async e => (await dbp).put('customExercises', e)
 export const listCustomExercises = async () => (await dbp).getAll('customExercises')
+export const removeCustomExercise = async name => (await dbp).delete('customExercises', name)
 
 export const setInositol = async (date, taken) => (await dbp).put('inositol', taken, date)
 export const getInositol = async date => Boolean(await (await dbp).get('inositol', date))
