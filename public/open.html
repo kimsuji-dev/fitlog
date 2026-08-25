@@ -2,16 +2,44 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Obsidian 열기</title>
-<style>body{margin:0;padding:32px 24px;font-family:-apple-system,system-ui,sans-serif;background:#0a0a0c;color:#eee}a{color:#fff}</style>
+<style>
+  body{margin:0;padding:32px 24px;font-family:-apple-system,system-ui,sans-serif;background:#0a0a0c;color:#eee;line-height:1.6}
+  a{color:#fff}
+  code{background:#1a1a1f;padding:2px 6px;border-radius:4px;font-size:.9em;word-break:break-all}
+  .btn{display:inline-block;margin-top:8px;padding:12px 18px;background:#1a1a1f;border:1px solid #333;border-radius:10px;text-decoration:none}
+  .fallback{margin-top:28px;padding-top:20px;border-top:1px solid #222;color:#aaa;font-size:.92em}
+</style>
+
 <p>Obsidian을 여는 중…</p>
-<p>안 열리면 <a id="a">여기를 눌러</a> 주세요.</p>
+<p><code id="target"></code></p>
+<p><a class="btn" id="a">Obsidian에서 열기</a></p>
+
+<div class="fallback" id="fallback" hidden>
+  <p><b>안 열렸거나 다른 노트가 떴나요?</b><br>
+  Obsidian이 이 경로를 못 찾으면 아무 말 없이 마지막에 보던 노트를 보여줍니다.
+  이 기기의 vault에 아직 그 파일이 동기화되지 않았을 수 있어요.</p>
+  <p><a class="btn" id="s">이 이름으로 검색해 보기</a></p>
+</div>
+
 <script>
 // 텔레그램은 obsidian:// 링크를 직접 못 열어서 https 페이지를 거쳐 앱으로 넘긴다.
-// ?f=시장조사/2026-08-22 (vault 상대 경로, .md 없이) · ?v=vault이름 (생략하면 마지막에 연 vault)
+// ?f=뉴스레터/2026-08-26 (vault 상대 경로, .md 없이) · ?v=vault이름 (생략하면 마지막에 연 vault)
+//
+// 파일을 못 찾을 때 Obsidian은 오류를 내지 않고 그냥 직전 노트를 띄운다 — 그래서
+// "링크가 고장났다"와 "기기에 파일이 없다"를 구분할 수 없었다 (2026-08-26).
+// 잠시 뒤에도 이 페이지가 남아 있으면(= 앱으로 못 넘어갔거나 사용자가 돌아왔으면)
+// 검색 대안을 보여준다. 검색 결과가 비면 동기화 문제라는 걸 바로 알 수 있다.
 const p = new URLSearchParams(location.search)
 const f = p.get('f') || ''
 const v = p.get('v')
-const url = 'obsidian://open?' + (v ? 'vault=' + encodeURIComponent(v) + '&' : '') + 'file=' + encodeURIComponent(f)
+const vq = v ? 'vault=' + encodeURIComponent(v) + '&' : ''
+const url = 'obsidian://open?' + vq + 'file=' + encodeURIComponent(f)
+
+document.getElementById('target').textContent = f || '(경로 없음)'
 document.getElementById('a').href = url
-location.replace(url)
+document.getElementById('s').href =
+  'obsidian://search?' + vq + 'query=' + encodeURIComponent(f.split('/').pop())
+
+if (f) location.replace(url)
+setTimeout(() => { document.getElementById('fallback').hidden = false }, 1500)
 </script>
