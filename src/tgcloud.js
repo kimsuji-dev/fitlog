@@ -48,6 +48,15 @@ export const cloudDB = {
     const entries = await storeKeys(store)
     if (entries.length === 0) return []
     const items = await call('getItems', entries.map(e => e.raw))
-    return entries.map(e => JSON.parse(items[e.raw]))
+    // 읽히지 않는 항목 하나 때문에 목록 전체가 깨지지 않게 건너뛴다.
+    // (JSON.parse(undefined)는 예외를 던져서, 키 하나만 비어도 기록이 통째로 안 보였다)
+    return entries.reduce((acc, e) => {
+      try {
+        acc.push(JSON.parse(items[e.raw]))
+      } catch {
+        console.warn(`fitlog: ${store}/${e.key} 를 읽지 못해 건너뜀`)
+      }
+      return acc
+    }, [])
   },
 }

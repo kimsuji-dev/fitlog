@@ -192,7 +192,15 @@ export default function Today({ sessions, weights, onSaved }) {
     // 자정을 넘긴 세션(예: 23:50 시작)은 저장/캘린더 모두 그날 23:59로 마감한다 (ponytail: 단순 상한, 실제 다음날 종료 시각이 필요해지면 날짜 넘김 지원 추가)
     if (end < start) end = '23:59'
     const session = { date: today, start, end, entries, memo, eventId }
-    await saveSession(session)
+    // 저장이 실패하면(텔레그램 CloudStorage 4096자 초과 등) 예외가 그대로 튀어나가
+    // 'saving' 스피너에 멈춘 채 운동 기록이 통째로 사라졌다. 화면에 알리고 entries를 남긴다.
+    try {
+      await saveSession(session)
+    } catch (err) {
+      setSaveState('calendar_fail')   // 재시도 버튼이 붙는 상태
+      setSaveMsg('저장 실패 — ' + err.message + ' (기록은 화면에 남아 있어요)')
+      return
+    }
     setStarted(false)
     onSaved()
     // 캘린더 미연결이면 조용히 로컬 저장만 (연결은 측정 탭 하단 설정에서)

@@ -34,6 +34,19 @@ describe('tgcloud 키 설계', () => {
     expect(await cloudDB.get('favorites', '데드리프트')).toBeUndefined()
   })
 
+
+  it('읽히지 않는 항목이 있어도 나머지 목록은 살아남는다', async () => {
+    globalThis.window.Telegram.WebApp.initData = 'query_id=x'
+    await cloudDB.put('sessions', { date: '2026-08-20', entries: [] })
+    await cloudDB.put('sessions', { date: '2026-08-21', entries: [] })
+    // 한 항목이 빈 값으로 남은 상황 (동시 삭제·쓰기 중단 등) — 예전엔 JSON.parse가 터져
+    // 목록 전체가 안 보였다
+    const cs = globalThis.window.Telegram.WebApp.CloudStorage
+    await new Promise(r => cs.setItem(cloudKey('sessions', '2026-08-21'), '', r))
+    const all = await cloudDB.getAll('sessions')
+    expect(all.map(s => s.date)).toEqual(['2026-08-20'])
+  })
+
   it('initData가 비면 텔레그램 아님', () => {
     expect(isTelegram()).toBe(true)
     globalThis.window.Telegram.WebApp.initData = ''
