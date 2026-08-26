@@ -19,26 +19,26 @@
 
 <p class="muted">Obsidian을 여는 중…</p>
 <p><code id="target"></code></p>
-<a class="btn primary" id="v0"><b>Obsidian에서 열기</b><small>표준 방식 — 자동으로 한 번 시도했어요</small></a>
+<a class="btn primary" id="v0"><b>Obsidian에서 열기</b><small>자동으로 한 번 시도했어요</small></a>
 
 <div class="panel" id="panel" hidden>
   <h2>안 열렸거나 다른 노트가 떴나요?</h2>
-  <p class="muted">Obsidian은 경로를 못 찾아도 오류를 내지 않고 그냥 직전 노트를 보여줍니다.
-  아래를 위에서부터 눌러 보세요. <b>되는 걸 알려주시면 그걸로 고정합니다.</b></p>
-  <a class="btn" id="v1"><b>② 슬래시를 그대로</b><small>폴더 구분자를 %2F로 안 바꾸는 방식</small></a>
-  <a class="btn" id="v2"><b>③ .md 붙여서</b><small>확장자까지 포함한 경로</small></a>
-  <a class="btn" id="v3"><b>④ 파일명만</b><small>폴더 없이 이름만 — 같은 이름이 여러 개면 엉뚱한 게 열릴 수 있음</small></a>
-  <a class="btn" id="v4"><b>⑤ vault 지정 없이</b><small>폰의 vault 이름이 다를 때</small></a>
-  <a class="btn" id="v5"><b>⑥ 이 이름으로 검색</b><small>열기 대신 검색 — 노트가 있는지 확인용</small></a>
+  <p class="muted">Obsidian은 노트를 못 찾아도 오류를 내지 않고 그냥 직전에 보던 노트를 보여줍니다.
+  아래를 위에서부터 눌러 보세요.</p>
+  <a class="btn" id="v1"><b>② 폴더 경로까지 넣어서</b><small>파일명만으로 못 찾는 경우</small></a>
+  <a class="btn" id="v2"><b>③ vault 지정 없이</b><small>폰의 vault 이름이 'brain'이 아닐 때</small></a>
+  <a class="btn" id="v3"><b>④ 이 이름으로 검색</b><small>열기 대신 검색 — 노트가 기기에 있는지 확인용</small></a>
 </div>
 
 <script>
 // 텔레그램은 obsidian:// 링크를 직접 못 열어서 https 페이지를 거쳐 앱으로 넘긴다.
-// ?f=뉴스레터/2026-08-26 (vault 상대 경로, .md 없이) · ?v=vault이름
+// ?f=뉴스레터/2026-08-27 (vault 상대 경로, .md 없이) · ?v=vault이름
 //
-// 2026-08-26: 맥에서는 표준 방식이 잘 되는데 폰에서는 엉뚱한 노트가 열린다(노트는 폰에도
-// 있는 걸 확인함). 원인이 %2F 인코딩인지 vault 이름인지 기기 없이는 못 가리므로,
-// 후보를 전부 버튼으로 깔아두고 되는 것을 고르게 한다. 확인되면 이 목록은 정리할 것.
+// 2026-08-27: 기본 동작을 "파일명만"으로 바꿨다. 맥에서는 폴더 경로가 잘 되는데
+// 폰에서는 계속 직전 노트(=어제 뉴스레터)가 열렸다. vault 전체에서 파일명이 유일한 것을
+// 확인했고(중복 0건), 이름만 넘기면 슬래시 인코딩(%2F)·하위폴더 해석 문제가 통째로 사라진다.
+// 맥에서 2026-08-27 / 2026-08-26이 각각 정확히 열리는 것까지 확인.
+// 폴더 경로 방식은 ②로 남겨둔다 — 나중에 같은 이름 파일이 생기면 그때 필요하다.
 const p = new URLSearchParams(location.search)
 const f = p.get('f') || ''
 const v = p.get('v')
@@ -47,12 +47,10 @@ const base = f.split('/').pop()
 const enc = encodeURIComponent
 
 const urls = [
-  'obsidian://open?' + vq + 'file=' + enc(f),                              // 표준(현행)
-  'obsidian://open?' + vq + 'file=' + f.split('/').map(enc).join('/'),     // 슬래시 유지
-  'obsidian://open?' + vq + 'file=' + enc(f + '.md'),                      // 확장자 포함
-  'obsidian://open?' + vq + 'file=' + enc(base),                           // 파일명만
-  'obsidian://open?file=' + enc(f),                                        // vault 미지정
-  'obsidian://search?' + vq + 'query=' + enc(base),                        // 검색
+  'obsidian://open?' + vq + 'file=' + enc(base),   // 기본: 파일명만
+  'obsidian://open?' + vq + 'file=' + enc(f),      // 폴더 경로까지
+  'obsidian://open?file=' + enc(base),             // vault 미지정
+  'obsidian://search?' + vq + 'query=' + enc(base),
 ]
 urls.forEach((u, i) => { document.getElementById('v' + i).href = u })
 document.getElementById('target').textContent = f || '(경로 없음)'
