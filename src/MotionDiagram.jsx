@@ -1,6 +1,8 @@
-// 동작 그림 — free-exercise-db 실사진이 있으면 그걸 쓰고, 없으면(또는 로드 실패 시)
-// 66개 종목을 12개 움직임 패턴으로 묶은 스틱피겨 폴백을 그린다.
-import { useState } from 'react'
+// 동작 그림 — 3단계 우선순위:
+//   1) workout-guide SVG 3프레임 애니메이션 (public/wg/, 로컬·오프라인)
+//   2) free-exercise-db 실사진 두 장 (아직 SVG를 매핑 못 한 3종목용, 외부 CDN)
+//   3) 12개 움직임 패턴 스틱피겨 (그림이 아예 없거나 로드 실패 시)
+import { useState, useEffect } from 'react'
 
 const LINE = '#e8dfc8'
 const ACCENT = '#d4af37'
@@ -140,7 +142,39 @@ function PhotoPair({ photos, pattern, size }) {
   )
 }
 
-export default function MotionDiagram({ pattern, photos, size = 90 }) {
+// 동작 3프레임 애니메이션 — workout-guide(@bryllim)의 SVG를 public/wg/ 에 담아 쓴다.
+// 사진 두 장보다 움직임이 보이고, 파일이 로컬이라 헬스장에서 신호가 없어도 뜬다.
+function WgFrames({ slug, onFail }) {
+  const [i, setI] = useState(0)
+  useEffect(() => {
+    // 모션 줄이기를 켠 사람에게는 첫 프레임만 보여준다
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+    const t = setInterval(() => setI(n => (n + 1) % SEQ.length), 700)
+    return () => clearInterval(t)
+  }, [slug])
+
+  return (
+    <div className="motion-frames">
+      {FRAMES.map(f => (
+        <img
+          key={f}
+          src={`${import.meta.env.BASE_URL}wg/${slug}/frame-${f}.svg`}
+          alt=""
+          className={f === SEQ[i] ? 'is-on' : ''}
+          decoding="async"
+          onError={onFail}
+        />
+      ))}
+    </div>
+  )
+}
+const FRAMES = [1, 2, 3]
+// 1→2→3→2 로 왕복시킨다. 3에서 1로 되감으면 동작이 툭 끊겨 보인다.
+const SEQ = [1, 2, 3, 2]
+
+export default function MotionDiagram({ pattern, photos, wg, size = 90 }) {
+  const [wgBroken, setWgBroken] = useState(false)
+  if (wg && !wgBroken) return <WgFrames slug={wg} onFail={() => setWgBroken(true)} />
   if (photos) return <PhotoPair photos={photos} pattern={pattern} size={size} />
   return <PatternDiagram pattern={pattern} size={size} />
 }

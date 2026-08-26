@@ -37,7 +37,7 @@ function ExerciseDetail({ ex, onBack, onAdd }) {
 
       <div className="detail-section">
         <div className="detail-heading">동작</div>
-        <MotionDiagram pattern={ex.pattern} photos={ex.photos} size={140} />
+        <MotionDiagram pattern={ex.pattern} photos={ex.photos} wg={ex.wg} size={140} />
       </div>
 
       <ul className="detail-cues">

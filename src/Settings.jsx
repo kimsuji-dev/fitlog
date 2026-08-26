@@ -109,6 +109,11 @@ export default function Settings() {
 
         {msg && <div className="notice">{msg}</div>}
 
+        {/* CC BY-SA 4.0 은 출처·라이선스 표시가 의무다. 지우지 말 것. */}
+        <div className="text-sm">
+          동작 그림: <a href="https://github.com/bryllim/workout-guide" target="_blank" rel="noreferrer">workout-guide</a> (Bryl Lim,
+          원작 Everkinetic) — <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">CC BY-SA 4.0</a>, 원본 그대로 사용
+        </div>
         <div className="text-sm">운동 사진: free-exercise-db (퍼블릭 도메인)</div>
       </div>
     </details>

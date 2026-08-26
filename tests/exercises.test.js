@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { existsSync } from 'node:fs'
 import { BUILTIN, MUSCLES, EQUIPMENT, MOTION_PATTERNS, matchesSearch } from '../src/exercises.js'
 
 describe('exercises', () => {
@@ -49,5 +50,20 @@ describe('matchesSearch — 검색은 공백·대소문자를 무시한다', () 
   })
   it('관계없는 검색어는 안 걸린다', () => {
     expect(matchesSearch('몬스터 글루트', '벤치')).toBe(false)
+  })
+
+  // 슬러그 오타나 빠진 프레임은 앱에서 조용히 스틱피겨로 떨어져 눈치채기 어렵다.
+  it('wg 슬러그는 public/wg 에 3프레임이 전부 있다', () => {
+    for (const ex of BUILTIN) {
+      if (!ex.wg) continue
+      for (const n of [1, 2, 3]) {
+        expect(existsSync(`public/wg/${ex.wg}/frame-${n}.svg`), `${ex.name} → ${ex.wg}/frame-${n}.svg`).toBe(true)
+      }
+    }
+  })
+
+  it('그림이 하나도 없는 종목은 3개를 넘지 않는다', () => {
+    const none = BUILTIN.filter(ex => !ex.wg && !ex.photos)
+    expect(none.length).toBeLessThanOrEqual(3)
   })
 })

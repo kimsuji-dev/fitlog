@@ -802,6 +802,30 @@ details[open] .settings-summary {
   color: var(--text-2);
 }
 
+/* 동작 프레임 — 3장을 겹쳐두고 보이는 한 장만 켠다 (매번 로드하면 첫 바퀴가 덜컥거린다) */
+.motion-frames {
+  position: relative;
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 1;
+  margin: 0 auto;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-border);
+  background: var(--inner);
+}
+
+.motion-frames img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* 크로스페이드하면 흰 실루엣 두 장이 겹쳐 잔상처럼 보인다 — 플립북처럼 딱딱 바꾼다 */
+  opacity: 0;
+}
+
+.motion-frames img.is-on { opacity: 1; }
+
 .motion-photo-pair {
   display: flex;
   gap: 8px;
