@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Today from './Today'
 import Measure from './Measure'
+import Check from './Check'
 import { listSessions, listWeights } from './db'
 import { volume } from './calc'
 import { parseDeepLink } from './validate'
@@ -25,6 +26,7 @@ export default function App() {
   const TABS = [
     { id: 'workout', label: '💪 운동', count: sessions.length },
     { id: 'measure', label: '📏 측정', count: weights.length },
+    { id: 'check', label: '✅ 체크', count: '' },
   ]
 
   return (
@@ -39,6 +41,9 @@ export default function App() {
       </div>
       <div style={{ display: tab === 'measure' ? undefined : 'none' }}>
         <Measure weights={weights} onSaved={reloadWeights} />
+      </div>
+      <div style={{ display: tab === 'check' ? undefined : 'none' }}>
+        <Check />
       </div>
 
       <nav className="tab-nav">

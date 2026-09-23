@@ -7,6 +7,7 @@ export function parseDeepLink(search) {
   if (MUSCLES.includes(muscle)) return { muscle }
   if (p.get('add') === '1') return { muscle: '전체' }
   if (p.get('tab') === 'measure') return { tab: 'measure' }
+  if (p.get('tab') === 'check') return { tab: 'check' }
   return null
 }
 
